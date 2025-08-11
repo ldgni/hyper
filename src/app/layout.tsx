@@ -3,6 +3,7 @@ import "./globals.css";
 import type { Metadata } from "next";
 import { Geist } from "next/font/google";
 
+import Header from "@/components/header";
 import { ThemeProvider } from "@/components/theme-provider";
 
 const geist = Geist({ subsets: ["latin"], display: "swap" });
@@ -25,6 +26,7 @@ export default function RootLayout({
           defaultTheme="system"
           enableSystem
           disableTransitionOnChange>
+          <Header />
           {children}
         </ThemeProvider>
       </body>
