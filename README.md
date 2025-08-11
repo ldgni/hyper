@@ -1,19 +1,19 @@
-# Repository name
+# Path
 
-> Description
+> Save and organize your favorite links
 
 ## Running Locally
 
 1. Clone the repository
 
 ```sh
-git clone https://github.com/ldgni/repo-name.io
+git clone https://github.com/ldgni/path.io
 ```
 
 2. Navigate inside the repository
 
 ```sh
-cd repo-name
+cd path
 ```
 
 3. Install dependencies
