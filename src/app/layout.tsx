@@ -19,7 +19,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${geist.className}`}>
+      <body className={`${geist.className} mx-auto max-w-xl px-4 py-8`}>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
