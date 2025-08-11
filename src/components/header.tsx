@@ -1,6 +1,8 @@
 import { Link2 } from "lucide-react";
 import Link from "next/link";
 
+import { ModeToggle } from "./mode-toggle";
+
 export default function Header() {
   return (
     <div className="mb-8 flex justify-between">
@@ -8,7 +10,10 @@ export default function Header() {
         <Link2 />
         Path
       </Link>
-      <Link href="/auth/login">Login</Link>
+      <div className="flex items-center gap-2">
+        <Link href="/auth/login">Login</Link>
+        <ModeToggle />
+      </div>
     </div>
   );
 }
