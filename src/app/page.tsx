@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 
 export default function HomePage() {
   return (
@@ -44,6 +45,15 @@ export default function HomePage() {
                   name="email"
                   type="email"
                   placeholder="Enter your email"
+                />
+              </div>
+              <div className="grid gap-3">
+                <Label htmlFor="message-1">Message</Label>
+                <Textarea
+                  id="message-1"
+                  name="message"
+                  placeholder="Why are you interested?"
+                  className="resize-none"
                 />
               </div>
             </div>
