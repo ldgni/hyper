@@ -20,14 +20,16 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${geist.className} mx-auto max-w-xl px-4 py-8`}>
+      <body className={`${geist.className}`}>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
           enableSystem
           disableTransitionOnChange>
-          <Header />
-          {children}
+          <div className="mx-auto max-w-xl px-4 py-8">
+            <Header />
+            {children}
+          </div>
         </ThemeProvider>
       </body>
     </html>
