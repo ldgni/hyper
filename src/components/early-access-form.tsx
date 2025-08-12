@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
@@ -30,6 +31,11 @@ const formSchema = z.object({
 });
 
 export function EarlyAccessForm() {
+  const [submitStatus, setSubmitStatus] = useState<{
+    type: "success" | "error" | null;
+    message: string;
+  }>({ type: null, message: "" });
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -39,15 +45,55 @@ export function EarlyAccessForm() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    // Handle form submission here
-    console.log(values);
-    // You can add your API call here
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    try {
+      setSubmitStatus({ type: null, message: "" });
+
+      const response = await fetch("/api/early-access", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(values),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to submit request");
+      }
+
+      setSubmitStatus({
+        type: "success",
+        message: "Thank you! Your early access request has been submitted.",
+      });
+
+      form.reset();
+    } catch (error) {
+      setSubmitStatus({
+        type: "error",
+        message:
+          error instanceof Error
+            ? error.message
+            : "Something went wrong. Please try again.",
+      });
+    }
   }
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4">
+        {submitStatus.type && (
+          <div
+            className={`rounded-md p-3 text-sm ${
+              submitStatus.type === "success"
+                ? "border border-green-200 bg-green-50 text-green-700"
+                : "border border-red-200 bg-red-50 text-red-700"
+            }`}>
+            {submitStatus.message}
+          </div>
+        )}
+
         <FormField
           control={form.control}
           name="name"
@@ -100,7 +146,9 @@ export function EarlyAccessForm() {
           <Button
             type="submit"
             className="cursor-pointer"
-            disabled={form.formState.isSubmitting}>
+            disabled={
+              form.formState.isSubmitting || submitStatus.type === "success"
+            }>
             {form.formState.isSubmitting ? "Submitting..." : "Request"}
           </Button>
         </DialogFooter>
