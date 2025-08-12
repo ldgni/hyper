@@ -1,4 +1,4 @@
-# Path
+# Hyper
 
 > Save and organize your favorite links
 
@@ -7,13 +7,13 @@
 1. Clone the repository
 
 ```sh
-git clone https://github.com/ldgni/path.io
+git clone https://github.com/ldgni/hyper.io
 ```
 
 2. Navigate inside the repository
 
 ```sh
-cd path
+cd hyper
 ```
 
 3. Install dependencies

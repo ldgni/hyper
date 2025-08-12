@@ -8,7 +8,7 @@ export default function Header() {
     <div className="mb-8 flex justify-between">
       <Link href="/" className="flex items-center gap-2 text-lg font-bold">
         <Link2 />
-        Path
+        Hyper
       </Link>
       <NavLinks />
     </div>

@@ -10,7 +10,7 @@ async function seed() {
         name: "John Doe",
         email: "john.doe@example.com",
         message:
-          "I'm very interested in trying out Path. I work as a developer and would love to organize my bookmarks better.",
+          "I'm very interested in trying out Hyper. I work as a developer and would love to organize my bookmarks better.",
       },
     });
 

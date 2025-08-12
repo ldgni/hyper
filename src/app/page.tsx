@@ -23,7 +23,7 @@ export default function HomePage() {
           <DialogHeader>
             <DialogTitle>Request early access</DialogTitle>
             <DialogDescription>
-              Path is currently invite-only.
+              Hyper is currently invite-only.
             </DialogDescription>
           </DialogHeader>
           <EarlyAccessForm />

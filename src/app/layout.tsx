@@ -9,7 +9,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 const geist = Geist({ subsets: ["latin"], display: "swap" });
 
 export const metadata: Metadata = {
-  title: "Path",
+  title: "Hyper",
   description: "Save and organize your links",
 };
 
