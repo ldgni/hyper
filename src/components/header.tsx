@@ -1,7 +1,7 @@
 import { Link2 } from "lucide-react";
 import Link from "next/link";
 
-import { ModeToggle } from "./mode-toggle";
+import NavLinks from "./nav-links";
 
 export default function Header() {
   return (
@@ -10,19 +10,7 @@ export default function Header() {
         <Link2 />
         Path
       </Link>
-      <div className="flex items-center gap-2">
-        <Link
-          href="/admin"
-          className="text-muted-foreground hover:text-foreground transition-colors">
-          Admin
-        </Link>
-        <Link
-          href="/login"
-          className="text-muted-foreground hover:text-foreground transition-colors">
-          Login
-        </Link>
-        <ModeToggle />
-      </div>
+      <NavLinks />
     </div>
   );
 }
