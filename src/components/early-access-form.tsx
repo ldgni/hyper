@@ -1,10 +1,12 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { AlertCircle, CheckCircle2 } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { DialogClose, DialogFooter } from "@/components/ui/dialog";
 import {
@@ -65,7 +67,7 @@ export function EarlyAccessForm() {
 
       setSubmitStatus({
         type: "success",
-        message: "Thank you! Your early access request has been submitted.",
+        message: "Your early access request has been submitted.",
       });
 
       form.reset();
@@ -83,15 +85,18 @@ export function EarlyAccessForm() {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4">
-        {submitStatus.type && (
-          <div
-            className={`rounded-md p-3 text-sm ${
-              submitStatus.type === "success"
-                ? "border border-green-200 bg-green-50 text-green-700"
-                : "border border-red-200 bg-red-50 text-red-700"
-            }`}>
-            {submitStatus.message}
-          </div>
+        {submitStatus.type === "success" && (
+          <Alert>
+            <CheckCircle2 />
+            <AlertDescription>{submitStatus.message}</AlertDescription>
+          </Alert>
+        )}
+
+        {submitStatus.type === "error" && (
+          <Alert variant="destructive">
+            <AlertCircle />
+            <AlertDescription>{submitStatus.message}</AlertDescription>
+          </Alert>
         )}
 
         <FormField

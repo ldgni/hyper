@@ -30,7 +30,7 @@ export async function POST(request: NextRequest) {
 
     if (existingRequest) {
       return NextResponse.json(
-        { error: "Email already submitted for early access" },
+        { error: "Your email is already submitted for early access" },
         { status: 409 },
       );
     }
