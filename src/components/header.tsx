@@ -11,7 +11,7 @@ export default function Header() {
         Path
       </Link>
       <div className="flex items-center gap-2">
-        <Link href="/auth/login">Login</Link>
+        <Link href="/login">Login</Link>
         <ModeToggle />
       </div>
     </div>
