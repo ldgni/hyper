@@ -20,7 +20,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${geist.className} dot-grid`}>
+      <body
+        className={`${geist.className} dot-grid w-screen overflow-x-hidden`}>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"

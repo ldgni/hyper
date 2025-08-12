@@ -123,7 +123,7 @@
   .dot-grid {
     background-image: radial-gradient(
       circle at 10px 10px,
-      theme("colors.gray.100") 1px,
+      theme("colors.neutral.100") 1px,
       transparent 0
     );
     background-size: 20px 20px;
@@ -133,12 +133,8 @@
   .dark .dot-grid {
     background-image: radial-gradient(
       circle at 10px 10px,
-      theme("colors.gray.900") 1px,
+      theme("colors.neutral.900") 1px,
       transparent 0
     );
   }
-}
-
-html {
-  scrollbar-gutter: stable;
 }
