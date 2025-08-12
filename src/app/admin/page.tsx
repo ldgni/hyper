@@ -25,7 +25,7 @@ export default async function AdminPage() {
         </p>
       </div>
 
-      <div className="rounded-md border">
+      <div className="rounded-md">
         <AdminRequestsTable requests={requests} />
       </div>
     </div>
