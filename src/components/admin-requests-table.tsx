@@ -113,7 +113,7 @@ export function AdminRequestsTable({ requests }: AdminRequestsTableProps) {
                   onClick={() => handleApprovalAction(request.id, true)}
                   disabled={loadingActions.has(request.id)}
                   size="sm"
-                  className="bg-green-600 hover:bg-green-700">
+                  className="cursor-pointer bg-green-600 hover:bg-green-700">
                   {loadingActions.has(request.id) ? "Approving..." : "Approve"}
                 </Button>
               )}
@@ -122,11 +122,10 @@ export function AdminRequestsTable({ requests }: AdminRequestsTableProps) {
                 <Button
                   onClick={() => handleApprovalAction(request.id, false)}
                   disabled={loadingActions.has(request.id)}
-                  variant="outline"
-                  size="sm">
-                  {loadingActions.has(request.id)
-                    ? "Revoking..."
-                    : "Revoke Access"}
+                  variant="destructive"
+                  size="sm"
+                  className="cursor-pointer">
+                  {loadingActions.has(request.id) ? "Revoking..." : "Revoke"}
                 </Button>
               )}
             </div>
