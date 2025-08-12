@@ -12,6 +12,11 @@ export default function Header() {
       </Link>
       <div className="flex items-center gap-2">
         <Link
+          href="/admin"
+          className="text-muted-foreground hover:text-foreground transition-colors">
+          Admin
+        </Link>
+        <Link
           href="/login"
           className="text-muted-foreground hover:text-foreground transition-colors">
           Login
