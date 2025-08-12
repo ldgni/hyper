@@ -67,7 +67,7 @@ export function AdminRequestsTable({ requests }: AdminRequestsTableProps) {
     return (
       <Card>
         <CardHeader>
-          <CardTitle>No Early Access Requests</CardTitle>
+          <CardTitle>No early access requests</CardTitle>
           <CardDescription>
             No early access requests have been submitted yet.
           </CardDescription>
@@ -81,22 +81,26 @@ export function AdminRequestsTable({ requests }: AdminRequestsTableProps) {
       {localRequests.map((request) => (
         <Card key={request.id}>
           <CardHeader>
-            <div className="flex items-center justify-between">
-              <div>
-                <CardTitle className="text-lg">{request.name}</CardTitle>
-                <CardDescription>{request.email}</CardDescription>
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <div className="min-w-0 flex-1">
+                <CardTitle className="truncate text-lg">
+                  {request.name}
+                </CardTitle>
+                <CardDescription className="truncate">
+                  {request.email}
+                </CardDescription>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex flex-shrink-0 items-center gap-2">
                 <span
-                  className={`rounded-full px-2 py-1 text-xs font-medium ${
+                  className={`rounded-full px-2 py-1 text-xs font-medium whitespace-nowrap ${
                     request.approved
                       ? "bg-green-100 text-green-800"
                       : "bg-yellow-100 text-yellow-800"
                   }`}>
                   {request.approved ? "Approved" : "Pending"}
                 </span>
-                <span className="text-muted-foreground text-sm">
-                  {request.createdAt.toLocaleDateString()}
+                <span className="text-muted-foreground text-sm whitespace-nowrap">
+                  {request.createdAt.toLocaleDateString("en-GB")}
                 </span>
               </div>
             </div>
