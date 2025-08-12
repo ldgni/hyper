@@ -17,9 +17,7 @@ export default function HomePage() {
       </p>
       <Dialog>
         <DialogTrigger asChild>
-          <Button variant="outline" className="cursor-pointer">
-            Request early access
-          </Button>
+          <Button className="cursor-pointer">Request early access</Button>
         </DialogTrigger>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
