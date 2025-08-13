@@ -12,7 +12,6 @@ const linkSchema = z.object({
 
 export async function POST(request: NextRequest) {
   try {
-    // @ts-expect-error - NextAuth type compatibility issue
     const session = await getServerSession(authOptions);
 
     if (!session?.user?.email) {
@@ -32,7 +31,6 @@ export async function POST(request: NextRequest) {
 
     // Create the link
     const link = await prisma.link.create({
-      // @ts-expect-error - Prisma client types may not be updated yet
       data: {
         title: validatedData.title,
         url: validatedData.url,

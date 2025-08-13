@@ -64,7 +64,11 @@ export const authOptions = {
     strategy: "database" as const,
   },
   callbacks: {
-    async signIn({ user }: { user: Record<string, unknown> }) {
+    async signIn({
+      user,
+    }: {
+      user: { email?: string | null; name?: string | null };
+    }) {
       // Check if the user has an approved early access request
       if (user.email) {
         const earlyAccessRequest = await prisma.earlyAccessRequest.findUnique({
@@ -92,8 +96,17 @@ export const authOptions = {
       session,
       user,
     }: {
-      session: Record<string, unknown>;
-      user: Record<string, unknown>;
+      session: {
+        expires: string;
+        user?: {
+          email?: string | null;
+          name?: string | null;
+          image?: string | null;
+          id?: string;
+          isAdmin?: boolean;
+        };
+      };
+      user: { id: string };
     }) {
       if (session?.user) {
         // Fetch the full user data to get admin status

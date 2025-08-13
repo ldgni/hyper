@@ -6,7 +6,6 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
 export default async function DashboardPage() {
-  // @ts-expect-error - NextAuth type compatibility issue
   const session = await getServerSession(authOptions);
 
   if (!session?.user?.email) {
