@@ -49,7 +49,8 @@ export function LoginForm() {
         if (result.error === "AccessDenied") {
           setSubmitStatus({
             type: "error",
-            message: "You need an approved early access request to sign in.",
+            message:
+              "Access denied. You need an approved early access request to sign in.",
           });
         } else {
           setSubmitStatus({
@@ -60,7 +61,7 @@ export function LoginForm() {
       } else {
         setSubmitStatus({
           type: "success",
-          message: "Check your email to sign in.",
+          message: "Check your email for a magic link to sign in.",
         });
         form.reset();
       }
@@ -108,7 +109,9 @@ export function LoginForm() {
           disabled={
             form.formState.isSubmitting || submitStatus.type === "success"
           }>
-          {form.formState.isSubmitting ? "Sending..." : "Sent!"}
+          {form.formState.isSubmitting
+            ? "Sending magic link..."
+            : "Send Magic Link"}
         </Button>
       </form>
     </Form>

@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import { Geist } from "next/font/google";
 
 import Header from "@/components/header";
+import { Providers } from "@/components/providers";
 import { ThemeProvider } from "@/components/theme-provider";
 
 const geist = Geist({ subsets: ["latin"], display: "swap" });
@@ -22,16 +23,18 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body
         className={`${geist.className} dot-grid w-screen overflow-x-hidden`}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange>
-          <div className="mx-auto max-w-xl px-4 py-8">
-            <Header />
-            {children}
-          </div>
-        </ThemeProvider>
+        <Providers>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange>
+            <div className="mx-auto max-w-xl px-4 py-8">
+              <Header />
+              {children}
+            </div>
+          </ThemeProvider>
+        </Providers>
       </body>
     </html>
   );
