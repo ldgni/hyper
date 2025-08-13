@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 
+import { requireAdmin } from "@/lib/admin";
+import { sendEarlyAccessApprovalEmail } from "@/lib/email";
 import { prisma } from "@/lib/prisma";
 
 // Validation schema for the approval action
@@ -13,6 +15,9 @@ export async function PATCH(
   { params }: { params: Promise<{ id: string }> },
 ) {
   try {
+    // Check admin access - this will throw if not admin
+    await requireAdmin();
+
     const { id } = await params;
     const body = await request.json();
 
@@ -37,11 +42,31 @@ export async function PATCH(
       data: { approved },
     });
 
+    // Send approval email if approved
+    if (approved && !existingRequest.approved) {
+      try {
+        await sendEarlyAccessApprovalEmail(
+          updatedRequest.name,
+          updatedRequest.email,
+        );
+      } catch (error) {
+        console.error("Failed to send approval email:", error);
+        // Continue with the response even if email fails
+      }
+    }
+
     return NextResponse.json({
       message: `Request ${approved ? "approved" : "rejected"} successfully`,
       request: updatedRequest,
     });
   } catch (error) {
+    if (error instanceof Error && error.message === "Admin access required") {
+      return NextResponse.json(
+        { error: "Admin access required" },
+        { status: 403 },
+      );
+    }
+
     console.error("Error updating early access request:", error);
 
     if (error instanceof z.ZodError) {

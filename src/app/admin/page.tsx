@@ -1,4 +1,7 @@
+import { notFound } from "next/navigation";
+
 import { AdminRequestsTable } from "@/components/admin-requests-table";
+import { checkAdminAccess } from "@/lib/admin";
 import { prisma } from "@/lib/prisma";
 
 async function getEarlyAccessRequests() {
@@ -14,12 +17,18 @@ async function getEarlyAccessRequests() {
 }
 
 export default async function AdminPage() {
+  const { isAdmin } = await checkAdminAccess();
+
+  if (!isAdmin) {
+    notFound();
+  }
+
   const requests = await getEarlyAccessRequests();
 
   return (
     <div className="container mx-auto">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold">Admin</h1>
+        <h1 className="text-3xl font-bold">Admin Panel</h1>
         <p className="text-muted-foreground mt-2">
           Manage early access requests
         </p>
