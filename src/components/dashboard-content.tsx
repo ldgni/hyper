@@ -20,6 +20,11 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface LinkType {
   id: string;
@@ -46,6 +51,7 @@ export function DashboardContent({
   const [links, setLinks] = useState(initialLinks);
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [deletingLinks, setDeletingLinks] = useState<Set<string>>(new Set());
+  const [copiedLinks, setCopiedLinks] = useState<Set<string>>(new Set());
 
   const handleLinkCreated = (newLink: LinkType) => {
     setLinks([newLink, ...links]);
@@ -79,10 +85,21 @@ export function DashboardContent({
     }
   };
 
-  const copyToClipboard = async (text: string) => {
+  const copyToClipboard = async (text: string, linkId: string) => {
     try {
       await navigator.clipboard.writeText(text);
-      // You might want to show a toast notification here
+
+      // Mark as copied
+      setCopiedLinks((prev) => new Set([...prev, linkId]));
+
+      // Reset after 2 seconds
+      setTimeout(() => {
+        setCopiedLinks((prev) => {
+          const newSet = new Set(prev);
+          newSet.delete(linkId);
+          return newSet;
+        });
+      }, 2000);
     } catch (err) {
       console.error("Failed to copy text: ", err);
     }
@@ -91,14 +108,14 @@ export function DashboardContent({
   return (
     <div>
       {/* Header */}
-      <div className="mb-8 flex items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold">
+      <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="min-w-0">
+          <h1 className="truncate text-xl font-bold sm:text-2xl">
             Welcome{user.name ? `, ${user.name}` : ""}!
           </h1>
           <p className="text-muted-foreground">Manage your bookmarks</p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-shrink-0 gap-2">
           <Dialog
             open={isCreateDialogOpen}
             onOpenChange={setIsCreateDialogOpen}>
@@ -110,7 +127,7 @@ export function DashboardContent({
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
-                <DialogTitle>Add New Bookmark</DialogTitle>
+                <DialogTitle>Add new bookmark</DialogTitle>
                 <DialogDescription>
                   Save a new link to your bookmarks.
                 </DialogDescription>
@@ -141,7 +158,7 @@ export function DashboardContent({
                   onOpenChange={setIsCreateDialogOpen}>
                   <DialogContent>
                     <DialogHeader>
-                      <DialogTitle>Add New Bookmark</DialogTitle>
+                      <DialogTitle>Add new bookmark</DialogTitle>
                       <DialogDescription>
                         Save a new link to your bookmarks.
                       </DialogDescription>
@@ -159,46 +176,64 @@ export function DashboardContent({
         ) : (
           <div className="grid gap-4">
             {links.map((link) => (
-              <Card key={link.id}>
+              <Card key={link.id} className="relative">
                 <CardHeader>
-                  <div className="flex items-start justify-between">
-                    <div className="min-w-0 flex-1">
+                  <div className="pr-12">
+                    <div className="min-w-0">
                       <CardTitle className="truncate text-lg">
                         {link.title}
                       </CardTitle>
-                      <CardDescription className="truncate">
+                      <CardDescription className="truncate break-all">
                         {link.url}
                       </CardDescription>
                     </div>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => handleLinkDeleted(link.id)}
-                      disabled={deletingLinks.has(link.id)}
-                      className="text-destructive hover:text-destructive flex-shrink-0 cursor-pointer">
-                      <Trash2 />
-                    </Button>
                   </div>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => handleLinkDeleted(link.id)}
+                    disabled={deletingLinks.has(link.id)}
+                    className="text-destructive hover:text-destructive absolute top-4 right-4 z-10 cursor-pointer transition duration-500 hover:scale-105">
+                    <Trash2 />
+                  </Button>
                 </CardHeader>
                 <CardContent>
-                  <div className="flex items-center gap-2">
-                    <div className="bg-muted min-w-0 flex-1 rounded p-2">
-                      <code className="block truncate text-sm">{link.url}</code>
+                  <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+                    <div className="bg-muted min-w-0 flex-1 overflow-hidden rounded p-2">
+                      <code className="block truncate text-sm break-all">
+                        {link.url}
+                      </code>
                     </div>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => copyToClipboard(link.url)}
-                      className="cursor-pointer">
-                      <Copy className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => window.open(link.url, "_blank")}
-                      className="cursor-pointer">
-                      <ExternalLink className="h-4 w-4" />
-                    </Button>
+                    <div className="flex flex-shrink-0 gap-2">
+                      <div className="relative">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => copyToClipboard(link.url, link.id)}
+                          className="cursor-pointer transition duration-500 hover:scale-105">
+                          <Copy className="h-4 w-4" />
+                        </Button>
+                        {copiedLinks.has(link.id) && (
+                          <div className="bg-primary text-primary-foreground animate-in fade-in-0 zoom-in-95 absolute -top-10 left-1/2 -translate-x-1/2 transform rounded-md px-2 py-1 text-xs">
+                            Copied!
+                          </div>
+                        )}
+                      </div>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => window.open(link.url, "_blank")}
+                            className="cursor-pointer transition duration-500 hover:scale-105">
+                            <ExternalLink className="h-4 w-4" />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Open</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
