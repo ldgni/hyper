@@ -129,7 +129,7 @@ export function DashboardContent({
               <DialogHeader>
                 <DialogTitle>Add new bookmark</DialogTitle>
                 <DialogDescription>
-                  Save a new link to your bookmarks.
+                  Save a new link to your bookmarks
                 </DialogDescription>
               </DialogHeader>
               <LinkForm
@@ -160,7 +160,7 @@ export function DashboardContent({
                     <DialogHeader>
                       <DialogTitle>Add new bookmark</DialogTitle>
                       <DialogDescription>
-                        Save a new link to your bookmarks.
+                        Save a new link to your bookmarks
                       </DialogDescription>
                     </DialogHeader>
                     <LinkForm
