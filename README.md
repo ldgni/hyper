@@ -1,6 +1,6 @@
 # Hyper
 
-> Save and organize your favorite links
+> Bookmark management app for links
 
 ## Running Locally
 
