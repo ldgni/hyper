@@ -27,9 +27,7 @@ export default function AdminNotFound() {
           </AlertDescription>
         </Alert>
         <div className="text-center">
-          <Link
-            href="/dashboard"
-            className="text-sm text-blue-600 hover:underline">
+          <Link href="/" className="text-sm text-blue-600 hover:underline">
             ← Back to Dashboard
           </Link>
         </div>
