@@ -1,14 +1,27 @@
 "use client";
 
 import Link from "next/link";
-import { signOut, useSession } from "next-auth/react";
+import { signOut } from "next-auth/react";
 
 import { ModeToggle } from "./mode-toggle";
 import { Button } from "./ui/button";
 
-const NavLinks = () => {
-  const { data: session } = useSession();
+type CustomSession = {
+  expires: string;
+  user?: {
+    email?: string | null;
+    name?: string | null;
+    image?: string | null;
+    id?: string;
+    isAdmin?: boolean;
+  };
+} | null;
 
+interface NavLinksProps {
+  session: CustomSession;
+}
+
+const NavLinks = ({ session }: NavLinksProps) => {
   return (
     <nav className="flex items-center gap-2">
       {session?.user ? (
