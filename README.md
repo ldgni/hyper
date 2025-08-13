@@ -25,7 +25,7 @@ npm install
 4. Copy [`.env.example`](.env.example) to `.env.local` and update the variables
 
 ```sh
-cp .env.example .env.local
+cp .env.example .env
 ```
 
 5.  Start the development server
