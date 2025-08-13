@@ -10,6 +10,7 @@ interface CustomSession {
 }
 
 export async function checkAdminAccess() {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const session = (await getServerSession(authOptions as any)) as CustomSession;
 
   if (!session?.user?.email) {
