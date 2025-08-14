@@ -105,13 +105,27 @@ export async function DELETE(
       );
     }
 
-    // Delete the early access request
-    await prisma.earlyAccessRequest.delete({
-      where: { id },
+    // Use a transaction to delete both the early access request and the user
+    await prisma.$transaction(async (prisma) => {
+      // Delete the early access request
+      await prisma.earlyAccessRequest.delete({
+        where: { id },
+      });
+
+      // Delete the corresponding user if one exists
+      const existingUser = await prisma.user.findUnique({
+        where: { email: existingRequest.email },
+      });
+
+      if (existingUser) {
+        await prisma.user.delete({
+          where: { email: existingRequest.email },
+        });
+      }
     });
 
     return NextResponse.json({
-      message: "Request deleted successfully",
+      message: "Request and associated user deleted successfully",
     });
   } catch (error) {
     if (error instanceof Error && error.message === "Admin access required") {
