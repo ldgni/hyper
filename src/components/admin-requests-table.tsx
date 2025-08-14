@@ -1,5 +1,6 @@
 "use client";
 
+import { Trash2 } from "lucide-react";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -27,10 +28,13 @@ interface AdminRequestsTableProps {
 
 export function AdminRequestsTable({ requests }: AdminRequestsTableProps) {
   const [localRequests, setLocalRequests] = useState(requests);
-  const [loadingActions, setLoadingActions] = useState<Set<string>>(new Set());
+  const [loadingApprovals, setLoadingApprovals] = useState<Set<string>>(
+    new Set(),
+  );
+  const [loadingDeletes, setLoadingDeletes] = useState<Set<string>>(new Set());
 
   const handleApprovalAction = async (id: string, approved: boolean) => {
-    setLoadingActions((prev) => new Set([...prev, id]));
+    setLoadingApprovals((prev) => new Set([...prev, id]));
 
     try {
       const response = await fetch(`/api/admin/early-access/${id}`, {
@@ -55,7 +59,33 @@ export function AdminRequestsTable({ requests }: AdminRequestsTableProps) {
       console.error("Error updating request:", error);
       // You might want to show a toast notification here
     } finally {
-      setLoadingActions((prev) => {
+      setLoadingApprovals((prev) => {
+        const newSet = new Set(prev);
+        newSet.delete(id);
+        return newSet;
+      });
+    }
+  };
+
+  const handleDeleteRequest = async (id: string) => {
+    setLoadingDeletes((prev) => new Set([...prev, id]));
+
+    try {
+      const response = await fetch(`/api/admin/early-access/${id}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to delete request");
+      }
+
+      // Remove the request from local state
+      setLocalRequests((prev) => prev.filter((request) => request.id !== id));
+    } catch (error) {
+      console.error("Error deleting request:", error);
+      // You might want to show a toast notification here
+    } finally {
+      setLoadingDeletes((prev) => {
         const newSet = new Set(prev);
         newSet.delete(id);
         return newSet;
@@ -99,9 +129,14 @@ export function AdminRequestsTable({ requests }: AdminRequestsTableProps) {
                   }`}>
                   {request.approved ? "Approved" : "Pending"}
                 </span>
-                <span className="text-muted-foreground text-sm whitespace-nowrap">
-                  {request.createdAt.toLocaleDateString("en-GB")}
-                </span>
+                <Button
+                  onClick={() => handleDeleteRequest(request.id)}
+                  disabled={loadingDeletes.has(request.id)}
+                  variant="ghost"
+                  size="sm"
+                  className="text-muted-foreground hover:text-destructive h-8 w-8 cursor-pointer p-0">
+                  <Trash2 className="h-4 w-4" />
+                </Button>
               </div>
             </div>
           </CardHeader>
@@ -111,27 +146,36 @@ export function AdminRequestsTable({ requests }: AdminRequestsTableProps) {
               <p className="text-sm">{request.message}</p>
             </div>
 
-            <div className="flex gap-2">
-              {!request.approved && (
-                <Button
-                  onClick={() => handleApprovalAction(request.id, true)}
-                  disabled={loadingActions.has(request.id)}
-                  size="sm"
-                  className="cursor-pointer bg-green-600 hover:bg-green-700">
-                  {loadingActions.has(request.id) ? "Approving..." : "Approve"}
-                </Button>
-              )}
+            <div className="flex items-center justify-between">
+              <div className="flex gap-2">
+                {!request.approved && (
+                  <Button
+                    onClick={() => handleApprovalAction(request.id, true)}
+                    disabled={loadingApprovals.has(request.id)}
+                    size="sm"
+                    className="cursor-pointer bg-green-600 hover:bg-green-700">
+                    {loadingApprovals.has(request.id)
+                      ? "Approving..."
+                      : "Approve"}
+                  </Button>
+                )}
 
-              {request.approved && (
-                <Button
-                  onClick={() => handleApprovalAction(request.id, false)}
-                  disabled={loadingActions.has(request.id)}
-                  variant="destructive"
-                  size="sm"
-                  className="cursor-pointer">
-                  {loadingActions.has(request.id) ? "Revoking..." : "Revoke"}
-                </Button>
-              )}
+                {request.approved && (
+                  <Button
+                    onClick={() => handleApprovalAction(request.id, false)}
+                    disabled={loadingApprovals.has(request.id)}
+                    variant="destructive"
+                    size="sm"
+                    className="cursor-pointer">
+                    {loadingApprovals.has(request.id)
+                      ? "Revoking..."
+                      : "Revoke"}
+                  </Button>
+                )}
+              </div>
+              <span className="text-muted-foreground text-sm whitespace-nowrap">
+                {request.createdAt.toLocaleDateString("en-GB")}
+              </span>
             </div>
           </CardContent>
         </Card>

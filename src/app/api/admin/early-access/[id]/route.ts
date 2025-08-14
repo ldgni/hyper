@@ -82,3 +82,50 @@ export async function PATCH(
     );
   }
 }
+
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> },
+) {
+  try {
+    // Check admin access - this will throw if not admin
+    await requireAdmin();
+
+    const { id } = await params;
+
+    // Check if the request exists
+    const existingRequest = await prisma.earlyAccessRequest.findUnique({
+      where: { id },
+    });
+
+    if (!existingRequest) {
+      return NextResponse.json(
+        { error: "Early access request not found" },
+        { status: 404 },
+      );
+    }
+
+    // Delete the early access request
+    await prisma.earlyAccessRequest.delete({
+      where: { id },
+    });
+
+    return NextResponse.json({
+      message: "Request deleted successfully",
+    });
+  } catch (error) {
+    if (error instanceof Error && error.message === "Admin access required") {
+      return NextResponse.json(
+        { error: "Admin access required" },
+        { status: 403 },
+      );
+    }
+
+    console.error("Error deleting early access request:", error);
+
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 },
+    );
+  }
+}
