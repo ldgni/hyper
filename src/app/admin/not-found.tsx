@@ -1,5 +1,4 @@
 import { AlertCircle } from "lucide-react";
-import Link from "next/link";
 
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import {
@@ -12,9 +11,9 @@ import {
 
 export default function AdminNotFound() {
   return (
-    <Card className="mx-auto w-full max-w-sm">
+    <Card className="mx-auto w-full max-w-md">
       <CardHeader>
-        <CardTitle>Admin Access Required</CardTitle>
+        <CardTitle>Admin access required</CardTitle>
         <CardDescription>
           You need admin privileges to access this area.
         </CardDescription>
@@ -26,11 +25,6 @@ export default function AdminNotFound() {
             This page is restricted to administrators only.
           </AlertDescription>
         </Alert>
-        <div className="text-center">
-          <Link href="/" className="text-sm text-blue-600 hover:underline">
-            ← Back to Dashboard
-          </Link>
-        </div>
       </CardContent>
     </Card>
   );
