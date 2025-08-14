@@ -1,5 +1,6 @@
 "use client";
 
+import { Home, LogIn, LogOut, UserStar } from "lucide-react";
 import Link from "next/link";
 import { signOut } from "next-auth/react";
 
@@ -26,30 +27,31 @@ const NavLinks = ({ session }: NavLinksProps) => {
     <nav className="flex items-center gap-2">
       {session?.user ? (
         <>
+          <Button asChild variant="outline" size="icon">
+            <Link href="/">
+              <Home />
+            </Link>
+          </Button>
           {(session.user as { isAdmin?: boolean })?.isAdmin && (
-            <Button
-              asChild
-              variant="ghost"
-              size="sm"
-              className="text-muted-foreground hover:text-foreground cursor-pointer">
-              <Link href="/admin">Admin</Link>
+            <Button asChild variant="outline" size="icon">
+              <Link href="/admin">
+                <UserStar />
+              </Link>
             </Button>
           )}
           <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => signOut()}
-            className="text-muted-foreground hover:text-foreground cursor-pointer">
-            Sign Out
+            variant="outline"
+            size="icon"
+            className="cursor-pointer"
+            onClick={() => signOut()}>
+            <LogOut />
           </Button>
         </>
       ) : (
-        <Button
-          asChild
-          variant="ghost"
-          size="sm"
-          className="text-muted-foreground hover:text-foreground cursor-pointer">
-          <Link href="/login">Login</Link>
+        <Button asChild variant="outline" size="icon">
+          <Link href="/login">
+            <LogIn />
+          </Link>
         </Button>
       )}
       <ModeToggle />
