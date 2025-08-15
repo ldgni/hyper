@@ -1,6 +1,6 @@
 "use client";
 
-import { Copy, Edit, ExternalLink, Plus, Trash2 } from "lucide-react";
+import { Check, Copy, Edit, ExternalLink, Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
 
 import { LinkForm } from "@/components/link-form";
@@ -107,7 +107,7 @@ export function DashboardContent({
           newSet.delete(linkId);
           return newSet;
         });
-      }, 2000);
+      }, 3000);
     } catch (err) {
       console.error("Failed to copy text: ", err);
     }
@@ -236,20 +236,28 @@ export function DashboardContent({
                       </code>
                     </div>
                     <div className="flex flex-shrink-0 gap-2">
-                      <div className="relative">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => copyToClipboard(link.url, link.id)}
-                          className="cursor-pointer transition duration-500 hover:scale-105">
-                          <Copy className="h-4 w-4" />
-                        </Button>
-                        {copiedLinks.has(link.id) && (
-                          <div className="bg-primary text-primary-foreground animate-in fade-in-0 zoom-in-95 absolute -top-10 left-1/2 -translate-x-1/2 transform rounded-md px-2 py-1 text-xs">
-                            Copied!
-                          </div>
-                        )}
-                      </div>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => copyToClipboard(link.url, link.id)}
+                            className={`cursor-pointer hover:scale-105 ${
+                              copiedLinks.has(link.id)
+                                ? "border-green-600 text-green-600 transition-all duration-500 hover:border-green-700 hover:text-green-700"
+                                : ""
+                            }`}>
+                            {copiedLinks.has(link.id) ? (
+                              <Check className="h-4 w-4" />
+                            ) : (
+                              <Copy className="h-4 w-4" />
+                            )}
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>{copiedLinks.has(link.id) ? "Copied!" : "Copy"}</p>
+                        </TooltipContent>
+                      </Tooltip>
                       <Tooltip>
                         <TooltipTrigger asChild>
                           <Button
