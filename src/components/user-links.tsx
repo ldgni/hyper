@@ -134,13 +134,15 @@ export function UserLinks({ user, links: initialLinks }: UserLinksProps) {
               <div className="text-center">
                 <h3 className="mb-2 text-lg font-medium">No bookmarks yet</h3>
                 <p className="text-muted-foreground mb-4">
-                  Save your first link to get started.
+                  Save your first link to get started
                 </p>
                 <Dialog
                   open={isCreateDialogOpen}
                   onOpenChange={setIsCreateDialogOpen}>
                   <DialogTrigger asChild>
-                    <Button>Add your first bookmark</Button>
+                    <Button className="cursor-pointer">
+                      Add your first bookmark
+                    </Button>
                   </DialogTrigger>
                   <DialogContent>
                     <DialogHeader>
