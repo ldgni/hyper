@@ -23,6 +23,11 @@ const formSchema = z.object({
 
 interface LinkFormProps {
   userId: string;
+  initialData?: {
+    id: string;
+    title: string;
+    url: string;
+  };
   onSuccess: (link: {
     id: string;
     userId: string;
@@ -34,22 +39,31 @@ interface LinkFormProps {
   onCancel: () => void;
 }
 
-export function LinkForm({ userId, onSuccess, onCancel }: LinkFormProps) {
+export function LinkForm({
+  userId,
+  initialData,
+  onSuccess,
+  onCancel,
+}: LinkFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const isEditing = !!initialData;
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      title: "",
-      url: "",
+      title: initialData?.title || "",
+      url: initialData?.url || "",
     },
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsSubmitting(true);
     try {
-      const response = await fetch("/api/links", {
-        method: "POST",
+      const url = isEditing ? `/api/links/${initialData.id}` : "/api/links";
+      const method = isEditing ? "PUT" : "POST";
+
+      const response = await fetch(url, {
+        method,
         headers: {
           "Content-Type": "application/json",
         },
@@ -61,14 +75,21 @@ export function LinkForm({ userId, onSuccess, onCancel }: LinkFormProps) {
 
       if (!response.ok) {
         const data = await response.json();
-        throw new Error(data.error || "Failed to create link");
+        throw new Error(
+          data.error || `Failed to ${isEditing ? "update" : "create"} link`,
+        );
       }
 
       const link = await response.json();
       onSuccess(link);
-      form.reset();
+      if (!isEditing) {
+        form.reset();
+      }
     } catch (error) {
-      console.error("Error creating link:", error);
+      console.error(
+        `Error ${isEditing ? "updating" : "creating"} link:`,
+        error,
+      );
       // You might want to show an error toast here
     } finally {
       setIsSubmitting(false);
@@ -122,7 +143,13 @@ export function LinkForm({ userId, onSuccess, onCancel }: LinkFormProps) {
             type="submit"
             disabled={isSubmitting}
             className="cursor-pointer">
-            {isSubmitting ? "Saving..." : "Save"}
+            {isSubmitting
+              ? isEditing
+                ? "Updating..."
+                : "Saving..."
+              : isEditing
+                ? "Update"
+                : "Save"}
           </Button>
         </div>
       </form>

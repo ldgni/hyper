@@ -1,6 +1,6 @@
 "use client";
 
-import { Copy, ExternalLink, Plus, Trash2 } from "lucide-react";
+import { Copy, Edit, ExternalLink, Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
 
 import { LinkForm } from "@/components/link-form";
@@ -50,12 +50,20 @@ export function DashboardContent({
 }: DashboardContentProps) {
   const [links, setLinks] = useState(initialLinks);
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+  const [editingLink, setEditingLink] = useState<LinkType | null>(null);
   const [deletingLinks, setDeletingLinks] = useState<Set<string>>(new Set());
   const [copiedLinks, setCopiedLinks] = useState<Set<string>>(new Set());
 
   const handleLinkCreated = (newLink: LinkType) => {
     setLinks([newLink, ...links]);
     setIsCreateDialogOpen(false);
+  };
+
+  const handleLinkUpdated = (updatedLink: LinkType) => {
+    setLinks(
+      links.map((link) => (link.id === updatedLink.id ? updatedLink : link)),
+    );
+    setEditingLink(null);
   };
 
   const handleLinkDeleted = async (linkId: string) => {
@@ -178,7 +186,7 @@ export function DashboardContent({
             {links.map((link) => (
               <Card key={link.id} className="relative">
                 <CardHeader>
-                  <div className="pr-12">
+                  <div className="pr-20">
                     <div className="min-w-0">
                       <CardTitle className="truncate text-lg">
                         {link.title}
@@ -188,14 +196,37 @@ export function DashboardContent({
                       </CardDescription>
                     </div>
                   </div>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => handleLinkDeleted(link.id)}
-                    disabled={deletingLinks.has(link.id)}
-                    className="text-destructive hover:text-destructive absolute top-4 right-4 z-10 cursor-pointer transition duration-500 hover:scale-105">
-                    <Trash2 />
-                  </Button>
+                  <div className="absolute top-4 right-4 flex gap-1">
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setEditingLink(link)}
+                          className="text-muted-foreground hover:text-foreground cursor-pointer transition duration-500 hover:scale-105">
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Edit</p>
+                      </TooltipContent>
+                    </Tooltip>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleLinkDeleted(link.id)}
+                          disabled={deletingLinks.has(link.id)}
+                          className="text-destructive hover:text-destructive cursor-pointer transition duration-500 hover:scale-105">
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Delete</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </div>
                 </CardHeader>
                 <CardContent>
                   <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
@@ -241,6 +272,32 @@ export function DashboardContent({
           </div>
         )}
       </div>
+
+      {/* Edit Dialog */}
+      <Dialog
+        open={!!editingLink}
+        onOpenChange={(open) => !open && setEditingLink(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Edit bookmark</DialogTitle>
+            <DialogDescription>
+              Update your bookmark information
+            </DialogDescription>
+          </DialogHeader>
+          {editingLink && (
+            <LinkForm
+              userId={user.id}
+              initialData={{
+                id: editingLink.id,
+                title: editingLink.title,
+                url: editingLink.url,
+              }}
+              onSuccess={handleLinkUpdated}
+              onCancel={() => setEditingLink(null)}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
