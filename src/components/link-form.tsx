@@ -13,6 +13,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Spinner } from "@/components/ui/spinner";
 import { useFormState } from "@/hooks";
 import { API_ROUTES } from "@/lib/constants";
 import { getErrorMessage } from "@/lib/errors";
@@ -148,13 +149,16 @@ export function LinkForm({
             type="submit"
             disabled={formState.type === "loading"}
             className="cursor-pointer">
-            {formState.type === "loading"
-              ? isEditing
-                ? "Updating..."
-                : "Saving..."
-              : isEditing
-                ? "Update"
-                : "Save"}
+            {formState.type === "loading" ? (
+              <div className="flex items-center gap-2">
+                <Spinner size="sm" />
+                <span>{isEditing ? "Updating..." : "Saving..."}</span>
+              </div>
+            ) : isEditing ? (
+              "Update"
+            ) : (
+              "Save"
+            )}
           </Button>
         </div>
       </form>

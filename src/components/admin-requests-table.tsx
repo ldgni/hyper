@@ -11,6 +11,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Spinner } from "@/components/ui/spinner";
 
 interface EarlyAccessRequest {
   id: string;
@@ -135,7 +136,11 @@ export function AdminRequestsTable({ requests }: AdminRequestsTableProps) {
                   variant="ghost"
                   size="sm"
                   className="text-muted-foreground hover:text-destructive h-8 w-8 cursor-pointer p-0">
-                  <Trash2 className="h-4 w-4" />
+                  {loadingDeletes.has(request.id) ? (
+                    <Spinner size="sm" />
+                  ) : (
+                    <Trash2 className="h-4 w-4" />
+                  )}
                 </Button>
               </div>
             </div>
@@ -154,9 +159,14 @@ export function AdminRequestsTable({ requests }: AdminRequestsTableProps) {
                     disabled={loadingApprovals.has(request.id)}
                     size="sm"
                     className="cursor-pointer bg-green-600 hover:bg-green-700">
-                    {loadingApprovals.has(request.id)
-                      ? "Approving..."
-                      : "Approve"}
+                    {loadingApprovals.has(request.id) ? (
+                      <div className="flex items-center gap-2">
+                        <Spinner size="sm" />
+                        <span>Approving...</span>
+                      </div>
+                    ) : (
+                      "Approve"
+                    )}
                   </Button>
                 )}
 
@@ -167,9 +177,14 @@ export function AdminRequestsTable({ requests }: AdminRequestsTableProps) {
                     variant="destructive"
                     size="sm"
                     className="cursor-pointer">
-                    {loadingApprovals.has(request.id)
-                      ? "Revoking..."
-                      : "Revoke"}
+                    {loadingApprovals.has(request.id) ? (
+                      <div className="flex items-center gap-2">
+                        <Spinner size="sm" />
+                        <span>Revoking...</span>
+                      </div>
+                    ) : (
+                      "Revoke"
+                    )}
                   </Button>
                 )}
               </div>

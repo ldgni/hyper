@@ -16,6 +16,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Spinner } from "@/components/ui/spinner";
 import { Textarea } from "@/components/ui/textarea";
 import { useFormState } from "@/hooks";
 import { API_ROUTES } from "@/lib/constants";
@@ -143,7 +144,14 @@ export function EarlyAccessForm() {
             disabled={
               formState.type === "loading" || formState.type === "success"
             }>
-            {formState.type === "loading" ? "Submitting..." : "Submit"}
+            {formState.type === "loading" ? (
+              <div className="flex items-center gap-2">
+                <Spinner size="sm" />
+                <span>Submitting...</span>
+              </div>
+            ) : (
+              "Submit"
+            )}
           </Button>
         </DialogFooter>
       </form>

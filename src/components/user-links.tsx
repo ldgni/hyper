@@ -20,6 +20,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { Spinner } from "@/components/ui/spinner";
 import {
   Tooltip,
   TooltipContent,
@@ -199,11 +200,17 @@ export function UserLinks({ user, links: initialLinks }: UserLinksProps) {
                           onClick={() => handleLinkDeleted(link.id)}
                           disabled={isDeletingLink(link.id)}
                           className="text-destructive hover:text-destructive cursor-pointer transition duration-500 hover:scale-105">
-                          <Trash2 className="h-4 w-4" />
+                          {isDeletingLink(link.id) ? (
+                            <Spinner size="sm" />
+                          ) : (
+                            <Trash2 className="h-4 w-4" />
+                          )}
                         </Button>
                       </TooltipTrigger>
                       <TooltipContent>
-                        <p>Delete</p>
+                        <p>
+                          {isDeletingLink(link.id) ? "Deleting..." : "Delete"}
+                        </p>
                       </TooltipContent>
                     </Tooltip>
                   </div>
