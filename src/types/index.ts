@@ -45,10 +45,3 @@ export interface AdminAccess {
 
 // Component loading states
 export type LoadingState = Set<string>;
-
-// Email template data
-export interface EmailTemplateData {
-  name: string;
-  email: string;
-  loginUrl: string;
-}

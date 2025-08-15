@@ -54,7 +54,7 @@ export function EarlyAccessForm() {
 
       updateFormState({
         type: "success",
-        message: "Your early access request has been submitted successfully!",
+        message: "Early access request submitted!",
       });
 
       form.reset();

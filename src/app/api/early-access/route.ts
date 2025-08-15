@@ -1,5 +1,6 @@
 import { NextRequest } from "next/server";
 
+import { sendEarlyAccessRequestEmail } from "@/lib/email";
 import {
   createErrorResponse,
   createSuccessResponse,
@@ -29,6 +30,17 @@ export async function POST(request: NextRequest) {
     const earlyAccessRequest = await prisma.earlyAccessRequest.create({
       data: validatedData,
     });
+
+    // Send confirmation email
+    try {
+      await sendEarlyAccessRequestEmail(
+        validatedData.name,
+        validatedData.email,
+      );
+    } catch (error) {
+      console.error("Failed to send early access request email:", error);
+      // Continue with the response even if email fails
+    }
 
     return createSuccessResponse(
       { id: earlyAccessRequest.id },
