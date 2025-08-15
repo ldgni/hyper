@@ -2,9 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AlertCircle, CheckCircle2 } from "lucide-react";
-import { useState } from "react";
 import { useForm } from "react-hook-form";
-import * as z from "zod";
 
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
@@ -19,27 +17,16 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-
-const formSchema = z.object({
-  name: z
-    .string()
-    .min(1, "Name is required")
-    .min(2, "Name must be at least 2 characters"),
-  email: z.string().min(1, "Email is required").email("Invalid email address"),
-  message: z
-    .string()
-    .min(1, "Message is required")
-    .min(10, "Message must be at least 10 characters"),
-});
+import { useFormState } from "@/hooks";
+import { API_ROUTES } from "@/lib/constants";
+import { getErrorMessage } from "@/lib/errors";
+import { type EarlyAccess, earlyAccessSchema } from "@/lib/validations";
 
 export function EarlyAccessForm() {
-  const [submitStatus, setSubmitStatus] = useState<{
-    type: "success" | "error" | null;
-    message: string;
-  }>({ type: null, message: "" });
+  const [formState, updateFormState] = useFormState();
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<EarlyAccess>({
+    resolver: zodResolver(earlyAccessSchema),
     defaultValues: {
       name: "",
       email: "",
@@ -47,11 +34,11 @@ export function EarlyAccessForm() {
     },
   });
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
-    try {
-      setSubmitStatus({ type: null, message: "" });
+  async function onSubmit(values: EarlyAccess) {
+    updateFormState({ type: "loading" });
 
-      const response = await fetch("/api/early-access", {
+    try {
+      const response = await fetch(API_ROUTES.EARLY_ACCESS, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -59,25 +46,21 @@ export function EarlyAccessForm() {
         body: JSON.stringify(values),
       });
 
-      const data = await response.json();
-
       if (!response.ok) {
-        throw new Error(data.error || "Failed to submit request");
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to submit request");
       }
 
-      setSubmitStatus({
+      updateFormState({
         type: "success",
-        message: "Your early access request has been submitted.",
+        message: "Your early access request has been submitted successfully!",
       });
 
       form.reset();
     } catch (error) {
-      setSubmitStatus({
+      updateFormState({
         type: "error",
-        message:
-          error instanceof Error
-            ? error.message
-            : "Something went wrong. Please try again.",
+        message: getErrorMessage(error),
       });
     }
   }
@@ -85,17 +68,17 @@ export function EarlyAccessForm() {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4">
-        {submitStatus.type === "success" && (
+        {formState.type === "success" && (
           <Alert>
-            <CheckCircle2 />
-            <AlertDescription>{submitStatus.message}</AlertDescription>
+            <CheckCircle2 className="h-4 w-4" />
+            <AlertDescription>{formState.message}</AlertDescription>
           </Alert>
         )}
 
-        {submitStatus.type === "error" && (
+        {formState.type === "error" && (
           <Alert variant="destructive">
-            <AlertCircle />
-            <AlertDescription>{submitStatus.message}</AlertDescription>
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription>{formState.message}</AlertDescription>
           </Alert>
         )}
 
@@ -112,6 +95,7 @@ export function EarlyAccessForm() {
             </FormItem>
           )}
         />
+
         <FormField
           control={form.control}
           name="email"
@@ -125,6 +109,7 @@ export function EarlyAccessForm() {
             </FormItem>
           )}
         />
+
         <FormField
           control={form.control}
           name="message"
@@ -133,7 +118,7 @@ export function EarlyAccessForm() {
               <FormLabel>Message</FormLabel>
               <FormControl>
                 <Textarea
-                  placeholder="Why are you interested?"
+                  placeholder="Why are you interested in early access?"
                   className="resize-none"
                   {...field}
                 />
@@ -142,9 +127,13 @@ export function EarlyAccessForm() {
             </FormItem>
           )}
         />
+
         <DialogFooter>
           <DialogClose asChild>
-            <Button variant="outline" className="cursor-pointer">
+            <Button
+              variant="outline"
+              className="cursor-pointer"
+              disabled={formState.type === "loading"}>
               Cancel
             </Button>
           </DialogClose>
@@ -152,9 +141,9 @@ export function EarlyAccessForm() {
             type="submit"
             className="cursor-pointer"
             disabled={
-              form.formState.isSubmitting || submitStatus.type === "success"
+              formState.type === "loading" || formState.type === "success"
             }>
-            {form.formState.isSubmitting ? "Submitting..." : "Request"}
+            {formState.type === "loading" ? "Submitting..." : "Submit"}
           </Button>
         </DialogFooter>
       </form>

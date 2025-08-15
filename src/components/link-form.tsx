@@ -1,9 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
 import { useForm } from "react-hook-form";
-import * as z from "zod";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -15,11 +13,11 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-
-const formSchema = z.object({
-  title: z.string().min(1, "Title is required"),
-  url: z.string().min(1, "URL is required").url("Invalid URL"),
-});
+import { useFormState } from "@/hooks";
+import { API_ROUTES } from "@/lib/constants";
+import { getErrorMessage } from "@/lib/errors";
+import { type Link, linkSchema } from "@/lib/validations";
+import type { DbLink } from "@/types";
 
 interface LinkFormProps {
   userId: string;
@@ -28,14 +26,7 @@ interface LinkFormProps {
     title: string;
     url: string;
   };
-  onSuccess: (link: {
-    id: string;
-    userId: string;
-    title: string;
-    url: string;
-    createdAt: Date;
-    updatedAt: Date;
-  }) => void;
+  onSuccess: (link: DbLink) => void;
   onCancel: () => void;
 }
 
@@ -45,21 +36,24 @@ export function LinkForm({
   onSuccess,
   onCancel,
 }: LinkFormProps) {
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formState, updateFormState] = useFormState();
   const isEditing = !!initialData;
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<Link>({
+    resolver: zodResolver(linkSchema),
     defaultValues: {
       title: initialData?.title || "",
       url: initialData?.url || "",
     },
   });
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
-    setIsSubmitting(true);
+  async function onSubmit(values: Link) {
+    updateFormState({ type: "loading" });
+
     try {
-      const url = isEditing ? `/api/links/${initialData.id}` : "/api/links";
+      const url = isEditing
+        ? `${API_ROUTES.LINKS}/${initialData.id}`
+        : API_ROUTES.LINKS;
       const method = isEditing ? "PUT" : "POST";
 
       const response = await fetch(url, {
@@ -74,25 +68,31 @@ export function LinkForm({
       });
 
       if (!response.ok) {
-        const data = await response.json();
+        const errorData = await response.json();
         throw new Error(
-          data.error || `Failed to ${isEditing ? "update" : "create"} link`,
+          errorData.error ||
+            `Failed to ${isEditing ? "update" : "create"} link`,
         );
       }
 
-      const link = await response.json();
-      onSuccess(link);
+      const result = await response.json();
+      const linkData = result.data || result; // Handle both new and legacy response formats
+
+      updateFormState({
+        type: "success",
+        message: `Link ${isEditing ? "updated" : "created"} successfully`,
+      });
+
+      onSuccess(linkData);
+
       if (!isEditing) {
         form.reset();
       }
     } catch (error) {
-      console.error(
-        `Error ${isEditing ? "updating" : "creating"} link:`,
-        error,
-      );
-      // You might want to show an error toast here
-    } finally {
-      setIsSubmitting(false);
+      updateFormState({
+        type: "error",
+        message: getErrorMessage(error),
+      });
     }
   }
 
@@ -131,19 +131,24 @@ export function LinkForm({
           )}
         />
 
+        {formState.type === "error" && (
+          <div className="text-destructive text-sm">{formState.message}</div>
+        )}
+
         <div className="flex justify-end gap-2">
           <Button
             type="button"
             variant="outline"
             onClick={onCancel}
+            disabled={formState.type === "loading"}
             className="cursor-pointer">
             Cancel
           </Button>
           <Button
             type="submit"
-            disabled={isSubmitting}
+            disabled={formState.type === "loading"}
             className="cursor-pointer">
-            {isSubmitting
+            {formState.type === "loading"
               ? isEditing
                 ? "Updating..."
                 : "Saving..."

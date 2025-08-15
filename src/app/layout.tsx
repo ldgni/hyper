@@ -6,12 +6,16 @@ import { Geist } from "next/font/google";
 import Header from "@/components/header";
 import { Providers } from "@/components/providers";
 import { ThemeProvider } from "@/components/theme-provider";
+import { APP_CONFIG } from "@/lib/constants";
 
 const geist = Geist({ subsets: ["latin"], display: "swap" });
 
 export const metadata: Metadata = {
-  title: "Hyper",
-  description: "Save and organize your links",
+  title: APP_CONFIG.name,
+  description: APP_CONFIG.description,
+  icons: {
+    icon: "/favicon.ico",
+  },
 };
 
 export default function RootLayout({
@@ -31,7 +35,7 @@ export default function RootLayout({
             disableTransitionOnChange>
             <div className="mx-auto max-w-xl px-4 py-8">
               <Header />
-              {children}
+              <main>{children}</main>
             </div>
           </ThemeProvider>
         </Providers>

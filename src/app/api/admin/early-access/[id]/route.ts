@@ -1,14 +1,14 @@
-import { NextRequest, NextResponse } from "next/server";
-import { z } from "zod";
+import { NextRequest } from "next/server";
 
 import { requireAdmin } from "@/lib/admin";
 import { sendEarlyAccessApprovalEmail } from "@/lib/email";
+import {
+  createErrorResponse,
+  createSuccessResponse,
+  handleApiError,
+} from "@/lib/errors";
 import { prisma } from "@/lib/prisma";
-
-// Validation schema for the approval action
-const approvalSchema = z.object({
-  approved: z.boolean(),
-});
+import { approvalSchema } from "@/lib/validations";
 
 export async function PATCH(
   request: NextRequest,
@@ -20,8 +20,6 @@ export async function PATCH(
 
     const { id } = await params;
     const body = await request.json();
-
-    // Validate the request body
     const { approved } = approvalSchema.parse(body);
 
     // Check if the request exists
@@ -30,10 +28,7 @@ export async function PATCH(
     });
 
     if (!existingRequest) {
-      return NextResponse.json(
-        { error: "Early access request not found" },
-        { status: 404 },
-      );
+      return createErrorResponse("Early access request not found", 404);
     }
 
     // Update the approval status
@@ -42,7 +37,7 @@ export async function PATCH(
       data: { approved },
     });
 
-    // Send approval email if approved
+    // Send approval email if approved for the first time
     if (approved && !existingRequest.approved) {
       try {
         await sendEarlyAccessApprovalEmail(
@@ -55,31 +50,12 @@ export async function PATCH(
       }
     }
 
-    return NextResponse.json({
-      message: `Request ${approved ? "approved" : "rejected"} successfully`,
-      request: updatedRequest,
-    });
-  } catch (error) {
-    if (error instanceof Error && error.message === "Admin access required") {
-      return NextResponse.json(
-        { error: "Admin access required" },
-        { status: 403 },
-      );
-    }
-
-    console.error("Error updating early access request:", error);
-
-    if (error instanceof z.ZodError) {
-      return NextResponse.json(
-        { error: "Invalid request data", details: error.issues },
-        { status: 400 },
-      );
-    }
-
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 },
+    return createSuccessResponse(
+      updatedRequest,
+      `Request ${approved ? "approved" : "rejected"} successfully`,
     );
+  } catch (error) {
+    return handleApiError(error);
   }
 }
 
@@ -99,10 +75,7 @@ export async function DELETE(
     });
 
     if (!existingRequest) {
-      return NextResponse.json(
-        { error: "Early access request not found" },
-        { status: 404 },
-      );
+      return createErrorResponse("Early access request not found", 404);
     }
 
     // Use a transaction to delete both the early access request and the user
@@ -124,22 +97,11 @@ export async function DELETE(
       }
     });
 
-    return NextResponse.json({
-      message: "Request and associated user deleted successfully",
-    });
-  } catch (error) {
-    if (error instanceof Error && error.message === "Admin access required") {
-      return NextResponse.json(
-        { error: "Admin access required" },
-        { status: 403 },
-      );
-    }
-
-    console.error("Error deleting early access request:", error);
-
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 },
+    return createSuccessResponse(
+      null,
+      "Request and associated user deleted successfully",
     );
+  } catch (error) {
+    return handleApiError(error);
   }
 }

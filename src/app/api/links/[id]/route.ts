@@ -1,8 +1,14 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 import { getServerSession } from "next-auth/next";
 
 import { authOptions } from "@/lib/auth";
+import {
+  createErrorResponse,
+  createSuccessResponse,
+  handleApiError,
+} from "@/lib/errors";
 import { prisma } from "@/lib/prisma";
+import { linkSchema } from "@/lib/validations";
 
 export async function PUT(
   request: NextRequest,
@@ -10,38 +16,22 @@ export async function PUT(
 ) {
   try {
     const session = await getServerSession(authOptions);
-
     if (!session?.user?.email) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return createErrorResponse("Authentication required", 401);
+    }
+
+    const user = await prisma.user.findUnique({
+      where: { email: session.user.email },
+      select: { id: true },
+    });
+
+    if (!user) {
+      return createErrorResponse("User not found", 404);
     }
 
     const { id } = await params;
     const body = await request.json();
-    const { title, url } = body;
-
-    // Validate input
-    if (!title || !url) {
-      return NextResponse.json(
-        { error: "Title and URL are required" },
-        { status: 400 },
-      );
-    }
-
-    // Basic URL validation
-    try {
-      new URL(url);
-    } catch {
-      return NextResponse.json({ error: "Invalid URL" }, { status: 400 });
-    }
-
-    // Find the user
-    const user = await prisma.user.findUnique({
-      where: { email: session.user.email },
-    });
-
-    if (!user) {
-      return NextResponse.json({ error: "User not found" }, { status: 404 });
-    }
+    const validatedData = linkSchema.parse(body);
 
     // Find the link and verify ownership
     const link = await prisma.link.findUnique({
@@ -49,33 +39,25 @@ export async function PUT(
     });
 
     if (!link) {
-      return NextResponse.json({ error: "Link not found" }, { status: 404 });
+      return createErrorResponse("Link not found", 404);
     }
 
     if (link.userId !== user.id) {
-      return NextResponse.json(
-        { error: "Forbidden: You can only edit your own links" },
-        { status: 403 },
-      );
+      return createErrorResponse("You can only edit your own links", 403);
     }
 
     // Update the link
     const updatedLink = await prisma.link.update({
       where: { id },
       data: {
-        title,
-        url,
+        ...validatedData,
         updatedAt: new Date(),
       },
     });
 
-    return NextResponse.json(updatedLink, { status: 200 });
+    return createSuccessResponse(updatedLink, "Link updated successfully");
   } catch (error) {
-    console.error("Error updating link:", error);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 },
-    );
+    return handleApiError(error);
   }
 }
 
@@ -85,21 +67,20 @@ export async function DELETE(
 ) {
   try {
     const session = await getServerSession(authOptions);
-
     if (!session?.user?.email) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return createErrorResponse("Authentication required", 401);
     }
 
-    const { id } = await params;
-
-    // Find the user
     const user = await prisma.user.findUnique({
       where: { email: session.user.email },
+      select: { id: true },
     });
 
     if (!user) {
-      return NextResponse.json({ error: "User not found" }, { status: 404 });
+      return createErrorResponse("User not found", 404);
     }
+
+    const { id } = await params;
 
     // Find the link and verify ownership
     const link = await prisma.link.findUnique({
@@ -107,14 +88,11 @@ export async function DELETE(
     });
 
     if (!link) {
-      return NextResponse.json({ error: "Link not found" }, { status: 404 });
+      return createErrorResponse("Link not found", 404);
     }
 
     if (link.userId !== user.id) {
-      return NextResponse.json(
-        { error: "Forbidden: You can only delete your own links" },
-        { status: 403 },
-      );
+      return createErrorResponse("You can only delete your own links", 403);
     }
 
     // Delete the link
@@ -122,15 +100,8 @@ export async function DELETE(
       where: { id },
     });
 
-    return NextResponse.json(
-      { message: "Link deleted successfully" },
-      { status: 200 },
-    );
+    return createSuccessResponse(null, "Link deleted successfully");
   } catch (error) {
-    console.error("Error deleting link:", error);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 },
-    );
+    return handleApiError(error);
   }
 }

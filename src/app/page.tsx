@@ -1,7 +1,6 @@
 import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth/next";
 
-import { DashboardContent } from "@/components/dashboard-content";
 import { EarlyAccessForm } from "@/components/early-access-form";
 import { Button } from "@/components/ui/button";
 import {
@@ -12,13 +11,15 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { UserLinks } from "@/components/user-links";
 import { authOptions } from "@/lib/auth";
+import { APP_CONFIG } from "@/lib/constants";
 import { prisma } from "@/lib/prisma";
 
 export default async function HomePage() {
   const session = await getServerSession(authOptions);
 
-  // If user is logged in, show dashboard content
+  // If user is logged in, show their links
   if (session?.user?.email) {
     // Get the user from the database to ensure we have the id
     const user = await prisma.user.findUnique({
@@ -40,13 +41,13 @@ export default async function HomePage() {
       },
     });
 
-    return <DashboardContent user={user} links={links} />;
+    return <UserLinks user={user} links={links} />;
   }
 
   // If user is not logged in, show early access form
   return (
-    <>
-      <p className="mb-4">
+    <div>
+      <p className="text-muted-foreground mb-4">
         A place to save and organize your favorite links. Currently invite-only.
       </p>
       <Dialog>
@@ -57,12 +58,12 @@ export default async function HomePage() {
           <DialogHeader>
             <DialogTitle>Request early access</DialogTitle>
             <DialogDescription>
-              Hyper is currently invite-only.
+              {APP_CONFIG.name} is currently invite-only. Request access below.
             </DialogDescription>
           </DialogHeader>
           <EarlyAccessForm />
         </DialogContent>
       </Dialog>
-    </>
+    </div>
   );
 }

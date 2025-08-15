@@ -2,24 +2,16 @@
 
 import { Home, LogIn, LogOut, UserStar } from "lucide-react";
 import Link from "next/link";
+import type { Session } from "next-auth";
 import { signOut } from "next-auth/react";
+
+import { ROUTES } from "@/lib/constants";
 
 import { ModeToggle } from "./mode-toggle";
 import { Button } from "./ui/button";
 
-type CustomSession = {
-  expires: string;
-  user?: {
-    email?: string | null;
-    name?: string | null;
-    image?: string | null;
-    id?: string;
-    isAdmin?: boolean;
-  };
-} | null;
-
 interface NavLinksProps {
-  session: CustomSession;
+  session: Session | null;
 }
 
 const NavLinks = ({ session }: NavLinksProps) => {
@@ -28,13 +20,13 @@ const NavLinks = ({ session }: NavLinksProps) => {
       {session?.user ? (
         <>
           <Button asChild variant="outline" size="icon">
-            <Link href="/">
+            <Link href={ROUTES.HOME}>
               <Home />
             </Link>
           </Button>
-          {(session.user as { isAdmin?: boolean })?.isAdmin && (
+          {session.user.isAdmin && (
             <Button asChild variant="outline" size="icon">
-              <Link href="/admin">
+              <Link href={ROUTES.ADMIN}>
                 <UserStar />
               </Link>
             </Button>
@@ -49,7 +41,7 @@ const NavLinks = ({ session }: NavLinksProps) => {
         </>
       ) : (
         <Button asChild variant="outline" size="icon">
-          <Link href="/login">
+          <Link href={ROUTES.LOGIN}>
             <LogIn />
           </Link>
         </Button>

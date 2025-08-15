@@ -25,41 +25,30 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useCopyToClipboard, useLoadingState } from "@/hooks";
+import { API_ROUTES } from "@/lib/constants";
+import type { DbLink, DbUser } from "@/types";
 
-interface LinkType {
-  id: string;
-  userId: string;
-  title: string;
-  url: string;
-  createdAt: Date;
-  updatedAt: Date;
+interface UserLinksProps {
+  user: Pick<DbUser, "id" | "name" | "email">;
+  links: DbLink[];
 }
 
-interface DashboardContentProps {
-  user: {
-    id: string;
-    name?: string | null;
-    email?: string | null;
-  };
-  links: LinkType[];
-}
-
-export function DashboardContent({
-  user,
-  links: initialLinks,
-}: DashboardContentProps) {
+export function UserLinks({ user, links: initialLinks }: UserLinksProps) {
   const [links, setLinks] = useState(initialLinks);
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
-  const [editingLink, setEditingLink] = useState<LinkType | null>(null);
-  const [deletingLinks, setDeletingLinks] = useState<Set<string>>(new Set());
-  const [copiedLinks, setCopiedLinks] = useState<Set<string>>(new Set());
+  const [editingLink, setEditingLink] = useState<DbLink | null>(null);
 
-  const handleLinkCreated = (newLink: LinkType) => {
+  const { setLoading: setDeletingLink, isLoading: isDeletingLink } =
+    useLoadingState();
+  const { copyToClipboard, copiedItems } = useCopyToClipboard();
+
+  const handleLinkCreated = (newLink: DbLink) => {
     setLinks([newLink, ...links]);
     setIsCreateDialogOpen(false);
   };
 
-  const handleLinkUpdated = (updatedLink: LinkType) => {
+  const handleLinkUpdated = (updatedLink: DbLink) => {
     setLinks(
       links.map((link) => (link.id === updatedLink.id ? updatedLink : link)),
     );
@@ -67,50 +56,37 @@ export function DashboardContent({
   };
 
   const handleLinkDeleted = async (linkId: string) => {
-    setDeletingLinks((prev) => new Set([...prev, linkId]));
+    setDeletingLink(linkId, true);
 
     try {
-      const response = await fetch(`/api/links/${linkId}`, {
+      const response = await fetch(`${API_ROUTES.LINKS}/${linkId}`, {
         method: "DELETE",
       });
 
       if (!response.ok) {
-        const data = await response.json();
-        console.error("Failed to delete link:", data.error);
-        return;
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to delete link");
       }
 
-      // Remove the link from the local state
       setLinks(links.filter((link) => link.id !== linkId));
     } catch (error) {
       console.error("Error deleting link:", error);
+      // TODO: Add toast notification
     } finally {
-      setDeletingLinks((prev) => {
-        const newSet = new Set(prev);
-        newSet.delete(linkId);
-        return newSet;
-      });
+      setDeletingLink(linkId, false);
     }
   };
 
-  const copyToClipboard = async (text: string, linkId: string) => {
-    try {
-      await navigator.clipboard.writeText(text);
-
-      // Mark as copied
-      setCopiedLinks((prev) => new Set([...prev, linkId]));
-
-      // Reset after 2 seconds
-      setTimeout(() => {
-        setCopiedLinks((prev) => {
-          const newSet = new Set(prev);
-          newSet.delete(linkId);
-          return newSet;
-        });
-      }, 3000);
-    } catch (err) {
-      console.error("Failed to copy text: ", err);
+  const handleCopyUrl = async (url: string, linkId: string) => {
+    const success = await copyToClipboard(url, linkId);
+    if (!success) {
+      console.error("Failed to copy URL to clipboard");
+      // TODO: Add toast notification
     }
+  };
+
+  const openLink = (url: string) => {
+    window.open(url, "_blank", "noopener,noreferrer");
   };
 
   return (
@@ -123,36 +99,34 @@ export function DashboardContent({
           </h1>
           <p className="text-muted-foreground">Manage your bookmarks</p>
         </div>
-        <div className="flex flex-shrink-0 gap-2">
-          <Dialog
-            open={isCreateDialogOpen}
-            onOpenChange={setIsCreateDialogOpen}>
-            <DialogTrigger asChild>
-              <Button className="cursor-pointer">
-                <Plus />
-                Add
-              </Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Add new bookmark</DialogTitle>
-                <DialogDescription>
-                  Save a new link to your bookmarks
-                </DialogDescription>
-              </DialogHeader>
-              <LinkForm
-                userId={user.id}
-                onSuccess={handleLinkCreated}
-                onCancel={() => setIsCreateDialogOpen(false)}
-              />
-            </DialogContent>
-          </Dialog>
-        </div>
+
+        <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
+          <DialogTrigger asChild>
+            <Button className="cursor-pointer">
+              <Plus />
+              Add
+            </Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Add new bookmark</DialogTitle>
+              <DialogDescription>
+                Save a new link to your bookmarks
+              </DialogDescription>
+            </DialogHeader>
+            <LinkForm
+              userId={user.id}
+              onSuccess={handleLinkCreated}
+              onCancel={() => setIsCreateDialogOpen(false)}
+            />
+          </DialogContent>
+        </Dialog>
       </div>
 
       {/* Links List */}
       <div className="space-y-4">
         <h2 className="text-xl font-semibold">Bookmarks</h2>
+
         {links.length === 0 ? (
           <Card>
             <CardContent className="pt-6">
@@ -164,6 +138,9 @@ export function DashboardContent({
                 <Dialog
                   open={isCreateDialogOpen}
                   onOpenChange={setIsCreateDialogOpen}>
+                  <DialogTrigger asChild>
+                    <Button>Add your first bookmark</Button>
+                  </DialogTrigger>
                   <DialogContent>
                     <DialogHeader>
                       <DialogTitle>Add new bookmark</DialogTitle>
@@ -196,6 +173,8 @@ export function DashboardContent({
                       </CardDescription>
                     </div>
                   </div>
+
+                  {/* Action buttons */}
                   <div className="absolute top-4 right-4 flex gap-1">
                     <Tooltip>
                       <TooltipTrigger asChild>
@@ -211,13 +190,14 @@ export function DashboardContent({
                         <p>Edit</p>
                       </TooltipContent>
                     </Tooltip>
+
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <Button
                           variant="ghost"
                           size="sm"
                           onClick={() => handleLinkDeleted(link.id)}
-                          disabled={deletingLinks.has(link.id)}
+                          disabled={isDeletingLink(link.id)}
                           className="text-destructive hover:text-destructive cursor-pointer transition duration-500 hover:scale-105">
                           <Trash2 className="h-4 w-4" />
                         </Button>
@@ -228,6 +208,7 @@ export function DashboardContent({
                     </Tooltip>
                   </div>
                 </CardHeader>
+
                 <CardContent>
                   <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
                     <div className="bg-muted min-w-0 flex-1 overflow-hidden rounded p-2">
@@ -235,19 +216,20 @@ export function DashboardContent({
                         {link.url}
                       </code>
                     </div>
+
                     <div className="flex flex-shrink-0 gap-2">
                       <Tooltip>
                         <TooltipTrigger asChild>
                           <Button
                             variant="outline"
                             size="sm"
-                            onClick={() => copyToClipboard(link.url, link.id)}
+                            onClick={() => handleCopyUrl(link.url, link.id)}
                             className={`cursor-pointer hover:scale-105 ${
-                              copiedLinks.has(link.id)
+                              copiedItems.has(link.id)
                                 ? "border-green-600 text-green-600 transition-all duration-500 hover:border-green-700 hover:text-green-700"
                                 : ""
                             }`}>
-                            {copiedLinks.has(link.id) ? (
+                            {copiedItems.has(link.id) ? (
                               <Check className="h-4 w-4" />
                             ) : (
                               <Copy className="h-4 w-4" />
@@ -255,15 +237,16 @@ export function DashboardContent({
                           </Button>
                         </TooltipTrigger>
                         <TooltipContent>
-                          <p>{copiedLinks.has(link.id) ? "Copied!" : "Copy"}</p>
+                          <p>{copiedItems.has(link.id) ? "Copied!" : "Copy"}</p>
                         </TooltipContent>
                       </Tooltip>
+
                       <Tooltip>
                         <TooltipTrigger asChild>
                           <Button
                             variant="outline"
                             size="sm"
-                            onClick={() => window.open(link.url, "_blank")}
+                            onClick={() => openLink(link.url)}
                             className="cursor-pointer transition duration-500 hover:scale-105">
                             <ExternalLink className="h-4 w-4" />
                           </Button>
