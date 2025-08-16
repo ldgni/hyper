@@ -235,7 +235,7 @@ export function UserLinks({ user, links: initialLinks }: UserLinksProps) {
                             onClick={() => handleCopyUrl(link.url, link.id)}
                             className={`cursor-pointer hover:scale-105 ${
                               copiedItems.has(link.id)
-                                ? "border-green-600 text-green-600 transition-all duration-500 hover:border-green-700 hover:text-green-700"
+                                ? "text-green-600 transition-all duration-500 hover:text-green-700"
                                 : ""
                             }`}>
                             {copiedItems.has(link.id) ? (
