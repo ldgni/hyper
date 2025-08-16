@@ -10,6 +10,8 @@ export const authOptions = {
   providers: [
     EmailProvider({
       from: process.env.EMAIL_FROM || "noreply@yourdomain.com",
+      // Magic link expires after 10 minutes
+      maxAge: 10 * 60, // 10 minutes in seconds
       async sendVerificationRequest({ identifier: email, url }) {
         try {
           await sendLoginEmail(email, url);
@@ -23,6 +25,8 @@ export const authOptions = {
   ],
   session: {
     strategy: "database" as const,
+    // Session expires after 8 hours of inactivity
+    maxAge: 8 * 60 * 60, // 8 hours in seconds
   },
   callbacks: {
     async signIn({

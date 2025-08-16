@@ -48,7 +48,7 @@ export function getLoginEmailContent() {
         Click the button below to sign in.
       </Text>
       <Text className="mt-4 text-sm text-gray-500">
-        This link expires in 24 hours.
+        This link expires in 10 minutes.
       </Text>
     </>
   );
