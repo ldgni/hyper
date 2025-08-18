@@ -26,7 +26,7 @@ export default async function ErrorPage({ searchParams }: ErrorPageProps) {
       case "Configuration":
         return "There is a problem with the server configuration.";
       default:
-        return "An error occurred during sign in. Please try again.";
+        return "An error occurred. Please try again.";
     }
   };
 
