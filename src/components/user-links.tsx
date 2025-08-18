@@ -185,8 +185,8 @@ export function UserLinks({ user, links: initialLinks }: UserLinksProps) {
                           variant="ghost"
                           size="sm"
                           onClick={() => setEditingLink(link)}
-                          className="text-muted-foreground hover:text-foreground cursor-pointer transition duration-500 hover:scale-105">
-                          <Edit className="h-4 w-4" />
+                          className="text-muted-foreground hover:text-foreground cursor-pointer transition hover:scale-105">
+                          <Edit />
                         </Button>
                       </TooltipTrigger>
                       <TooltipContent>
@@ -201,11 +201,11 @@ export function UserLinks({ user, links: initialLinks }: UserLinksProps) {
                           size="sm"
                           onClick={() => handleLinkDeleted(link.id)}
                           disabled={isDeletingLink(link.id)}
-                          className="text-destructive hover:text-destructive cursor-pointer transition duration-500 hover:scale-105">
+                          className="text-destructive hover:text-destructive cursor-pointer transition hover:scale-105">
                           {isDeletingLink(link.id) ? (
                             <Spinner size="sm" />
                           ) : (
-                            <Trash2 className="h-4 w-4" />
+                            <Trash2 />
                           )}
                         </Button>
                       </TooltipTrigger>

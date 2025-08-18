@@ -135,11 +135,11 @@ export function AdminRequestsTable({ requests }: AdminRequestsTableProps) {
                   disabled={loadingDeletes.has(request.id)}
                   variant="ghost"
                   size="sm"
-                  className="text-muted-foreground hover:text-destructive h-8 w-8 cursor-pointer p-0">
+                  className="text-muted-foreground hover:text-destructive h-8 w-8 cursor-pointer p-0 transition hover:scale-105">
                   {loadingDeletes.has(request.id) ? (
                     <Spinner size="sm" />
                   ) : (
-                    <Trash2 className="h-4 w-4" />
+                    <Trash2 />
                   )}
                 </Button>
               </div>
