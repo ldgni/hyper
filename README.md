@@ -1,6 +1,6 @@
 # Hyper
 
-> Bookmark management app for links
+> Bookmark management app
 
 ## Running Locally
 
