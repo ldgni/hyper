@@ -19,10 +19,10 @@ cd hyper
 3. Install dependencies
 
 ```sh
-npm install
+pnpm install
 ```
 
-4. Copy [`.env.example`](.env.example) to `.env.local` and update the variables
+4. Copy [`.env.example`](.env.example) to `.env` and update the variables
 
 ```sh
 cp .env.example .env
@@ -31,7 +31,7 @@ cp .env.example .env
 5.  Start the development server
 
 ```sh
-npm run dev
+pnpm run dev
 ```
 
 ## Contributing
