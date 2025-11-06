@@ -8,6 +8,13 @@
       "when": 1762356746181,
       "tag": "0000_omniscient_doctor_faustus",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1762443007689,
+      "tag": "0001_vengeful_cable",
+      "breakpoints": true
     }
   ]
 }
