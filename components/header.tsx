@@ -15,21 +15,13 @@ export default async function Header() {
 
   return (
     <header className="mb-8 flex items-center justify-between">
-      <nav>
-        <ul className="flex gap-4">
-          <li>
-            <Button variant="ghost" size="sm" asChild>
-              <Link href="/">
-                <Archive />
-              </Link>
-            </Button>
-          </li>
-          {session && (
-            <li>
-              <LogoutButton />
-            </li>
-          )}
-        </ul>
+      <nav className="flex gap-2 sm:gap-4">
+        <Button variant="ghost" asChild>
+          <Link href="/">
+            <Archive /> <span className="sr-only sm:not-sr-only">Stash</span>
+          </Link>
+        </Button>
+        {session && <LogoutButton />}
       </nav>
       <div className="flex h-4 items-center gap-2">
         <Button variant="ghost" size="icon" asChild>
