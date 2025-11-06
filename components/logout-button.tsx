@@ -17,7 +17,7 @@ export default function LogoutButton() {
     });
 
   return (
-    <Button onClick={signOut}>
+    <Button onClick={signOut} variant="ghost" size="sm">
       <LogOut />
       Logout
     </Button>

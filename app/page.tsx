@@ -1,7 +1,6 @@
 import { headers } from "next/headers";
 
 import LoginButton from "@/components/login-button";
-import LogoutButton from "@/components/logout-button";
 import { auth } from "@/lib/auth";
 
 export default async function HomePage() {
@@ -22,7 +21,6 @@ export default async function HomePage() {
   return (
     <div className="space-y-4 text-center">
       <p>Welcome {session.user.name}!</p>
-      <LogoutButton />
     </div>
   );
 }

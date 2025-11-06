@@ -1,29 +1,34 @@
-import { Github } from "lucide-react";
+import { Archive, Github } from "lucide-react";
+import { headers } from "next/headers";
 import Link from "next/link";
 
+import LogoutButton from "@/components/logout-button";
 import ModeToggle from "@/components/mode-toggle";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { auth } from "@/lib/auth";
 
-const navLinks = [
-  {
-    href: "/",
-    label: "Home",
-  },
-];
+export default async function Header() {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
 
-export default function Header() {
   return (
     <header className="mb-8 flex items-center justify-between">
       <nav>
-        <ul className="flex gap-2">
-          {navLinks.map((link) => (
-            <li key={link.href}>
-              <Button variant="ghost" size="sm" asChild>
-                <Link href={link.href}>{link.label}</Link>
-              </Button>
+        <ul className="flex gap-4">
+          <li>
+            <Button variant="ghost" size="sm" asChild>
+              <Link href="/">
+                <Archive />
+              </Link>
+            </Button>
+          </li>
+          {session && (
+            <li>
+              <LogoutButton />
             </li>
-          ))}
+          )}
         </ul>
       </nav>
       <div className="flex h-4 items-center gap-2">
