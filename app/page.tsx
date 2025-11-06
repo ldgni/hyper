@@ -1,6 +1,10 @@
 import { headers } from "next/headers";
+import { Suspense } from "react";
 
+import BookmarkForm from "@/components/bookmark-form";
+import BookmarkList from "@/components/bookmark-list";
 import LoginButton from "@/components/login-button";
+import { Spinner } from "@/components/ui/spinner";
 import { auth } from "@/lib/auth";
 
 export default async function HomePage() {
@@ -19,8 +23,17 @@ export default async function HomePage() {
   }
 
   return (
-    <div className="space-y-4 text-center">
-      <p>Welcome {session.user.name}!</p>
+    <div className="space-y-8">
+      <div className="space-y-4">
+        <h2 className="text-2xl font-semibold">Add a bookmark</h2>
+        <BookmarkForm />
+      </div>
+      <div className="space-y-4">
+        <h2 className="text-2xl font-semibold">Your bookmarks</h2>
+        <Suspense fallback={<Spinner className="mx-auto" />}>
+          <BookmarkList />
+        </Suspense>
+      </div>
     </div>
   );
 }
