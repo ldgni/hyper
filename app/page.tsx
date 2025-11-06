@@ -11,17 +11,18 @@ export default async function HomePage() {
 
   if (!session) {
     return (
-      <>
-        <p>Please log in to continue.</p>
+      <div className="text-center">
+        <h1 className="text-4xl font-bold sm:text-6xl">Stash</h1>
+        <p className="text-muted-foreground mb-4">Save your favorite links</p>
         <LoginButton />
-      </>
+      </div>
     );
   }
 
   return (
-    <>
+    <div className="space-y-4 text-center">
       <p>Welcome {session.user.name}!</p>
       <LogoutButton />
-    </>
+    </div>
   );
 }
