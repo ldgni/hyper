@@ -16,6 +16,15 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import {
   Tooltip,
@@ -27,7 +36,6 @@ import { deleteBookmark, updateBookmark } from "@/db/actions";
 import {
   Card,
   CardAction,
-  CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
@@ -41,7 +49,7 @@ type Bookmark = {
 };
 
 export default function BookmarkCard({ bookmark }: { bookmark: Bookmark }) {
-  const [isEditing, setIsEditing] = useState(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
@@ -78,43 +86,12 @@ export default function BookmarkCard({ bookmark }: { bookmark: Bookmark }) {
   async function handleUpdate(formData: FormData) {
     try {
       await updateBookmark(bookmark.id, formData);
-      setIsEditing(false);
+      setIsEditDialogOpen(false);
       toast.success("Bookmark updated!");
     } catch (error) {
       console.error("Failed to update bookmark:", error);
       toast.error("Failed to update bookmark. Please try again.");
     }
-  }
-
-  if (isEditing) {
-    return (
-      <Card>
-        <CardContent>
-          <form action={handleUpdate} className="space-y-4">
-            <Input type="url" name="url" defaultValue={bookmark.url} required />
-            <Input
-              type="text"
-              name="title"
-              defaultValue={bookmark.title}
-              required
-            />
-            <div className="flex gap-2">
-              <Button type="submit" size="sm" className="flex-1">
-                Save
-              </Button>
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={() => setIsEditing(false)}
-                className="flex-1">
-                Cancel
-              </Button>
-            </div>
-          </form>
-        </CardContent>
-      </Card>
-    );
   }
 
   return (
@@ -138,17 +115,61 @@ export default function BookmarkCard({ bookmark }: { bookmark: Bookmark }) {
             </TooltipTrigger>
             <TooltipContent>{isCopied ? "Copied!" : "Copy"}</TooltipContent>
           </Tooltip>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setIsEditing(true)}>
-                <Edit2 />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>Edit</TooltipContent>
-          </Tooltip>
+          <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <DialogTrigger asChild>
+                  <Button variant="ghost" size="sm">
+                    <Edit2 />
+                  </Button>
+                </DialogTrigger>
+              </TooltipTrigger>
+              <TooltipContent>Edit</TooltipContent>
+            </Tooltip>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Edit Bookmark</DialogTitle>
+                <DialogDescription>
+                  Update the URL and title for your bookmark.
+                </DialogDescription>
+              </DialogHeader>
+              <form action={handleUpdate} className="space-y-4">
+                <div className="space-y-2">
+                  <label htmlFor="url" className="text-sm font-medium">
+                    URL
+                  </label>
+                  <Input
+                    id="url"
+                    type="url"
+                    name="url"
+                    defaultValue={bookmark.url}
+                    required
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label htmlFor="title" className="text-sm font-medium">
+                    Title
+                  </label>
+                  <Input
+                    id="title"
+                    type="text"
+                    name="title"
+                    defaultValue={bookmark.title}
+                    required
+                  />
+                </div>
+                <DialogFooter>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => setIsEditDialogOpen(false)}>
+                    Cancel
+                  </Button>
+                  <Button type="submit">Save</Button>
+                </DialogFooter>
+              </form>
+            </DialogContent>
+          </Dialog>
           <AlertDialog
             open={showDeleteDialog}
             onOpenChange={setShowDeleteDialog}>
