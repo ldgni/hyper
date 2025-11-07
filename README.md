@@ -1,19 +1,19 @@
-# Repository name
+# Stash
 
-> Description
+> Bookmark management app
 
 ## Running Locally
 
 1. Clone the repository
 
 ```sh
-git clone https://github.com/ldgni/repo-name.git
+git clone https://github.com/ldgni/stash.git
 ```
 
 2. Navigate inside the repository
 
 ```sh
-cd repo-name
+cd stash
 ```
 
 3. Install dependencies
@@ -22,11 +22,11 @@ cd repo-name
 npm install
 ```
 
-<!-- 4. Copy [`.env.example`](.env.example) to `.env.local` and update the variables
+4. Copy [`.env.example`](.env.example) to `.env.local` and update the variables
 
 ```sh
 cp .env.example .env.local
-``` -->
+```
 
 4.  Start the development server
 
@@ -37,7 +37,3 @@ npm run dev
 ## Contributing
 
 Pull requests are appreciated. For major changes, please open an issue first.
-
-<!-- ## License
-
-This project is licensed under the terms of the [LICENSE NAME](LICENSE). -->
