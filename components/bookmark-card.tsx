@@ -17,6 +17,11 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { deleteBookmark, updateBookmark } from "@/db/actions";
 
 import {
@@ -39,11 +44,18 @@ export default function BookmarkCard({ bookmark }: { bookmark: Bookmark }) {
   const [isEditing, setIsEditing] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [isCopied, setIsCopied] = useState(false);
+  const [showCopyTooltip, setShowCopyTooltip] = useState(false);
 
   async function handleCopyUrl() {
     try {
       await navigator.clipboard.writeText(bookmark.url);
-      toast.success("URL copied to clipboard!");
+      setIsCopied(true);
+      setShowCopyTooltip(true);
+      setTimeout(() => {
+        setIsCopied(false);
+        setShowCopyTooltip(false);
+      }, 2000);
     } catch (error) {
       console.error("Failed to copy URL:", error);
       toast.error("Failed to copy URL. Please try again.");
@@ -118,20 +130,38 @@ export default function BookmarkCard({ bookmark }: { bookmark: Bookmark }) {
           </a>
         </CardDescription>
         <CardAction>
-          <Button variant="ghost" size="sm" onClick={handleCopyUrl}>
-            <Copy />
-          </Button>
-          <Button variant="ghost" size="sm" onClick={() => setIsEditing(true)}>
-            <Edit2 />
-          </Button>
+          <Tooltip open={showCopyTooltip} onOpenChange={setShowCopyTooltip}>
+            <TooltipTrigger asChild>
+              <Button variant="ghost" size="sm" onClick={handleCopyUrl}>
+                <Copy />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>{isCopied ? "Copied!" : "Copy"}</TooltipContent>
+          </Tooltip>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setIsEditing(true)}>
+                <Edit2 />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>Edit</TooltipContent>
+          </Tooltip>
           <AlertDialog
             open={showDeleteDialog}
             onOpenChange={setShowDeleteDialog}>
-            <AlertDialogTrigger asChild>
-              <Button variant="ghost" size="sm" disabled={isDeleting}>
-                <Trash2 />
-              </Button>
-            </AlertDialogTrigger>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <AlertDialogTrigger asChild>
+                  <Button variant="ghost" size="sm" disabled={isDeleting}>
+                    <Trash2 />
+                  </Button>
+                </AlertDialogTrigger>
+              </TooltipTrigger>
+              <TooltipContent>Delete</TooltipContent>
+            </Tooltip>
             <AlertDialogContent>
               <AlertDialogHeader>
                 <AlertDialogTitle>Delete bookmark?</AlertDialogTitle>
