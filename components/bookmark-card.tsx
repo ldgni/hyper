@@ -1,6 +1,6 @@
 "use client";
 
-import { Edit2, Trash2 } from "lucide-react";
+import { Copy, Edit2, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -39,6 +39,16 @@ export default function BookmarkCard({ bookmark }: { bookmark: Bookmark }) {
   const [isEditing, setIsEditing] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+
+  async function handleCopyUrl() {
+    try {
+      await navigator.clipboard.writeText(bookmark.url);
+      toast.success("URL copied to clipboard!");
+    } catch (error) {
+      console.error("Failed to copy URL:", error);
+      toast.error("Failed to copy URL. Please try again.");
+    }
+  }
 
   async function handleDelete() {
     setIsDeleting(true);
@@ -98,9 +108,19 @@ export default function BookmarkCard({ bookmark }: { bookmark: Bookmark }) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{bookmark.title}</CardTitle>
-        <CardDescription className="truncate">{bookmark.url}</CardDescription>
+        <CardTitle className="truncate">{bookmark.title}</CardTitle>
+        <CardDescription className="truncate">
+          <a
+            href={bookmark.url}
+            target="_blank"
+            className="hover:text-primary transition-colors">
+            {bookmark.url}
+          </a>
+        </CardDescription>
         <CardAction>
+          <Button variant="ghost" size="sm" onClick={handleCopyUrl}>
+            <Copy />
+          </Button>
           <Button variant="ghost" size="sm" onClick={() => setIsEditing(true)}>
             <Edit2 />
           </Button>

@@ -28,7 +28,7 @@ export default async function HomePage() {
         <h2 className="text-2xl font-semibold">Add a bookmark</h2>
         <BookmarkForm />
       </div>
-      <div className="space-y-4">
+      <div className="mx-auto max-w-lg space-y-4">
         <h2 className="text-2xl font-semibold">Your bookmarks</h2>
         <Suspense fallback={<Spinner className="mx-auto" />}>
           <BookmarkList />
