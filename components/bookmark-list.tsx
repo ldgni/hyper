@@ -13,7 +13,7 @@ export default async function BookmarkList() {
   }
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="grid items-start gap-4 sm:grid-cols-2">
       {bookmarks.map((bookmark) => (
         <BookmarkCard key={bookmark.id} bookmark={bookmark} />
       ))}

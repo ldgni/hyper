@@ -1,5 +1,6 @@
 "use client";
 
+import { Plus } from "lucide-react";
 import { useRef } from "react";
 import { toast } from "sonner";
 
@@ -24,9 +25,9 @@ export default function BookmarkForm() {
   return (
     <form ref={formRef} action={handleSubmit} className="space-y-4">
       <Input type="url" name="url" placeholder="https://example.com" required />
-      <Input type="text" name="title" placeholder="Bookmark title" required />
+      <Input type="text" name="title" placeholder="Example" required />
       <Button type="submit" className="w-full">
-        Add bookmark
+        <Plus />
       </Button>
     </form>
   );
