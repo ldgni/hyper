@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { FiEdit2, FiExternalLink, FiTrash2 } from "react-icons/fi";
+import { toast } from "sonner";
 
 import {
   AlertDialog,
@@ -35,8 +36,10 @@ export default function BookmarkCard({ bookmark }: { bookmark: Bookmark }) {
     setShowDeleteDialog(false);
     try {
       await deleteBookmark(bookmark.id);
+      toast.success("Bookmark deleted!");
     } catch (error) {
       console.error("Failed to delete bookmark:", error);
+      toast.error("Failed to delete bookmark. Please try again.");
       setIsDeleting(false);
     }
   }
@@ -45,8 +48,10 @@ export default function BookmarkCard({ bookmark }: { bookmark: Bookmark }) {
     try {
       await updateBookmark(bookmark.id, formData);
       setIsEditing(false);
+      toast.success("Bookmark updated!");
     } catch (error) {
       console.error("Failed to update bookmark:", error);
+      toast.error("Failed to update bookmark. Please try again.");
     }
   }
 

@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef } from "react";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,9 +14,10 @@ export default function BookmarkForm() {
     try {
       await createBookmark(formData);
       formRef.current?.reset();
+      toast.success("Bookmark added!");
     } catch (error) {
       console.error("Failed to create bookmark:", error);
-      alert("Failed to create bookmark. Please try again.");
+      toast.error("Failed to create bookmark. Please try again.");
     }
   }
 
