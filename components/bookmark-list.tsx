@@ -6,14 +6,14 @@ export default async function BookmarkList() {
 
   if (bookmarks.length === 0) {
     return (
-      <div className="text-muted-foreground py-12 text-center">
-        <p>No bookmarks yet. Add your first one above!</p>
-      </div>
+      <p className="text-muted-foreground text-center">
+        No bookmarks yet. Add your first one above!
+      </p>
     );
   }
 
   return (
-    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    <div className="flex flex-col gap-4">
       {bookmarks.map((bookmark) => (
         <BookmarkCard key={bookmark.id} bookmark={bookmark} />
       ))}
