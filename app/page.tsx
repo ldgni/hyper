@@ -16,7 +16,7 @@ export default async function HomePage() {
     return (
       <div className="text-center">
         <h1 className="text-4xl font-bold sm:text-6xl">Stash</h1>
-        <p className="text-muted-foreground mb-4">Save your favorite links</p>
+        <p className="text-muted-foreground mb-4">Never lose your bookmarks</p>
         <LoginButton />
       </div>
     );
