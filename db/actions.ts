@@ -1,6 +1,6 @@
 "use server";
 
-import { eq } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
 
@@ -53,7 +53,7 @@ export async function getBookmarks() {
     .select()
     .from(bookmark)
     .where(eq(bookmark.userId, user.id))
-    .orderBy(bookmark.createdAt);
+    .orderBy(desc(bookmark.createdAt));
 
   return bookmarks;
 }
