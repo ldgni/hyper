@@ -60,13 +60,16 @@ export default function BookmarkCard({ bookmark }: { bookmark: Bookmark }) {
       await navigator.clipboard.writeText(bookmark.url);
       setIsCopied(true);
       setShowCopyTooltip(true);
-      setTimeout(() => {
-        setIsCopied(false);
-        setShowCopyTooltip(false);
-      }, 2000);
     } catch (error) {
       console.error("Failed to copy URL:", error);
       toast.error("Failed to copy URL. Please try again.");
+    }
+  }
+
+  function handleTooltipOpenChange(open: boolean) {
+    setShowCopyTooltip(open);
+    if (!open) {
+      setIsCopied(false);
     }
   }
 
@@ -107,7 +110,9 @@ export default function BookmarkCard({ bookmark }: { bookmark: Bookmark }) {
           </a>
         </CardDescription>
         <CardAction>
-          <Tooltip open={showCopyTooltip} onOpenChange={setShowCopyTooltip}>
+          <Tooltip
+            open={showCopyTooltip}
+            onOpenChange={handleTooltipOpenChange}>
             <TooltipTrigger asChild>
               <Button variant="ghost" size="sm" onClick={handleCopyUrl}>
                 <Copy />
