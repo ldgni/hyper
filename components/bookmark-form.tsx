@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { createBookmark } from "@/db/actions";
 
+import { Label } from "./ui/label";
+
 export default function BookmarkForm() {
   const formRef = useRef<HTMLFormElement>(null);
 
@@ -24,8 +26,26 @@ export default function BookmarkForm() {
 
   return (
     <form ref={formRef} action={handleSubmit} className="space-y-4">
-      <Input type="url" name="url" placeholder="https://example.com" required />
-      <Input type="text" name="title" placeholder="Example" required />
+      <div className="space-y-2">
+        <Label htmlFor="name">Name</Label>
+        <Input
+          type="text"
+          name="name"
+          id="name"
+          placeholder="Example"
+          required
+        />
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="url">URL</Label>
+        <Input
+          type="url"
+          name="url"
+          id="url"
+          placeholder="https://example.com"
+          required
+        />
+      </div>
       <Button type="submit" className="w-full">
         <Plus />
       </Button>

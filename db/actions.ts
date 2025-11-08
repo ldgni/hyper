@@ -26,10 +26,10 @@ export async function createBookmark(formData: FormData) {
   const user = await getCurrentUser();
 
   const url = formData.get("url") as string;
-  const title = formData.get("title") as string;
+  const name = formData.get("name") as string;
 
-  if (!url || !title) {
-    throw new Error("URL and title are required");
+  if (!url || !name) {
+    throw new Error("URL and name are required");
   }
 
   const id = crypto.randomUUID();
@@ -37,7 +37,7 @@ export async function createBookmark(formData: FormData) {
   await db.insert(bookmark).values({
     id,
     url,
-    title,
+    name,
     userId: user.id,
   });
 
@@ -63,10 +63,10 @@ export async function updateBookmark(id: string, formData: FormData) {
   const user = await getCurrentUser();
 
   const url = formData.get("url") as string;
-  const title = formData.get("title") as string;
+  const name = formData.get("name") as string;
 
-  if (!url || !title) {
-    throw new Error("URL and title are required");
+  if (!url || !name) {
+    throw new Error("URL and name are required");
   }
 
   // Verify the bookmark belongs to the user
@@ -80,7 +80,7 @@ export async function updateBookmark(id: string, formData: FormData) {
     throw new Error("Bookmark not found or unauthorized");
   }
 
-  await db.update(bookmark).set({ url, title }).where(eq(bookmark.id, id));
+  await db.update(bookmark).set({ url, name }).where(eq(bookmark.id, id));
 
   revalidatePath("/");
   return { success: true };

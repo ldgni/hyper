@@ -44,7 +44,7 @@ import {
 type Bookmark = {
   id: string;
   url: string;
-  title: string;
+  name: string;
   createdAt: Date;
 };
 
@@ -97,7 +97,7 @@ export default function BookmarkCard({ bookmark }: { bookmark: Bookmark }) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="truncate">{bookmark.title}</CardTitle>
+        <CardTitle className="truncate">{bookmark.name}</CardTitle>
         <CardDescription className="truncate">
           <a
             href={bookmark.url}
@@ -130,7 +130,7 @@ export default function BookmarkCard({ bookmark }: { bookmark: Bookmark }) {
               <DialogHeader>
                 <DialogTitle>Edit Bookmark</DialogTitle>
                 <DialogDescription>
-                  Update the URL and title for your bookmark.
+                  Update the URL and name for your bookmark.
                 </DialogDescription>
               </DialogHeader>
               <form action={handleUpdate} className="space-y-4">
@@ -147,14 +147,14 @@ export default function BookmarkCard({ bookmark }: { bookmark: Bookmark }) {
                   />
                 </div>
                 <div className="space-y-2">
-                  <label htmlFor="title" className="text-sm font-medium">
-                    Title
+                  <label htmlFor="name" className="text-sm font-medium">
+                    Name
                   </label>
                   <Input
-                    id="title"
+                    id="name"
                     type="text"
-                    name="title"
-                    defaultValue={bookmark.title}
+                    name="name"
+                    defaultValue={bookmark.name}
                     required
                   />
                 </div>
@@ -188,7 +188,7 @@ export default function BookmarkCard({ bookmark }: { bookmark: Bookmark }) {
                 <AlertDialogTitle>Delete bookmark?</AlertDialogTitle>
                 <AlertDialogDescription>
                   This action cannot be undone. This will permanently delete the
-                  bookmark &ldquo;{bookmark.title}&rdquo;.
+                  bookmark &ldquo;{bookmark.name}&rdquo;.
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
