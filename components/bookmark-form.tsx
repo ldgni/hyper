@@ -6,9 +6,8 @@ import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { createBookmark } from "@/db/actions";
-
-import { Label } from "./ui/label";
 
 export default function BookmarkForm() {
   const formRef = useRef<HTMLFormElement>(null);
@@ -27,21 +26,21 @@ export default function BookmarkForm() {
   return (
     <form ref={formRef} action={handleSubmit} className="space-y-4">
       <div className="space-y-2">
-        <Label htmlFor="name">Name</Label>
+        <Label htmlFor="name2">Name</Label>
         <Input
           type="text"
           name="name"
-          id="name"
+          id="name2"
           placeholder="Example"
           required
         />
       </div>
       <div className="space-y-2">
-        <Label htmlFor="url">URL</Label>
+        <Label htmlFor="url2">URL</Label>
         <Input
           type="url"
           name="url"
-          id="url"
+          id="url2"
           placeholder="https://example.com"
           required
         />

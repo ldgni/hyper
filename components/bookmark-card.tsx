@@ -17,6 +17,13 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import {
+  Card,
+  CardAction,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
   Dialog,
   DialogContent,
   DialogDescription,
@@ -26,20 +33,13 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { deleteBookmark, updateBookmark } from "@/db/actions";
-
-import {
-  Card,
-  CardAction,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "./ui/card";
 
 type Bookmark = {
   id: string;
@@ -114,7 +114,7 @@ export default function BookmarkCard({ bookmark }: { bookmark: Bookmark }) {
             open={showCopyTooltip}
             onOpenChange={handleTooltipOpenChange}>
             <TooltipTrigger asChild>
-              <Button variant="ghost" size="sm" onClick={handleCopyUrl}>
+              <Button variant="ghost" size="icon" onClick={handleCopyUrl}>
                 <Copy />
               </Button>
             </TooltipTrigger>
@@ -124,7 +124,7 @@ export default function BookmarkCard({ bookmark }: { bookmark: Bookmark }) {
             <Tooltip>
               <TooltipTrigger asChild>
                 <DialogTrigger asChild>
-                  <Button variant="ghost" size="sm">
+                  <Button variant="ghost" size="icon">
                     <Edit2 />
                   </Button>
                 </DialogTrigger>
@@ -133,33 +133,31 @@ export default function BookmarkCard({ bookmark }: { bookmark: Bookmark }) {
             </Tooltip>
             <DialogContent>
               <DialogHeader>
-                <DialogTitle>Edit Bookmark</DialogTitle>
+                <DialogTitle>Edit bookmark</DialogTitle>
                 <DialogDescription>
-                  Update the URL and name for your bookmark.
+                  Update the details of your bookmark below.
                 </DialogDescription>
               </DialogHeader>
               <form action={handleUpdate} className="space-y-4">
                 <div className="space-y-2">
-                  <label htmlFor="url" className="text-sm font-medium">
-                    URL
-                  </label>
-                  <Input
-                    id="url"
-                    type="url"
-                    name="url"
-                    defaultValue={bookmark.url}
-                    required
-                  />
-                </div>
-                <div className="space-y-2">
-                  <label htmlFor="name" className="text-sm font-medium">
-                    Name
-                  </label>
+                  <Label htmlFor="name">Name</Label>
                   <Input
                     id="name"
                     type="text"
                     name="name"
+                    placeholder="Example"
                     defaultValue={bookmark.name}
+                    required
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="url">URL</Label>
+                  <Input
+                    id="url"
+                    type="url"
+                    name="url"
+                    placeholder="https://example.com"
+                    defaultValue={bookmark.url}
                     required
                   />
                 </div>
@@ -181,7 +179,7 @@ export default function BookmarkCard({ bookmark }: { bookmark: Bookmark }) {
             <Tooltip>
               <TooltipTrigger asChild>
                 <AlertDialogTrigger asChild>
-                  <Button variant="ghost" size="sm" disabled={isDeleting}>
+                  <Button variant="ghost" size="icon" disabled={isDeleting}>
                     <Trash2 />
                   </Button>
                 </AlertDialogTrigger>
