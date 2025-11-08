@@ -50,39 +50,22 @@ type Bookmark = {
 
 export default function BookmarkCard({ bookmark }: { bookmark: Bookmark }) {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
-  const [isDeleting, setIsDeleting] = useState(false);
-  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
-  const [isCopied, setIsCopied] = useState(false);
-  const [showCopyTooltip, setShowCopyTooltip] = useState(false);
 
   async function handleCopyUrl() {
     try {
       await navigator.clipboard.writeText(bookmark.url);
-      setIsCopied(true);
-      setShowCopyTooltip(true);
-    } catch (error) {
-      console.error("Failed to copy URL:", error);
-      toast.error("Failed to copy URL. Please try again.");
-    }
-  }
-
-  function handleTooltipOpenChange(open: boolean) {
-    setShowCopyTooltip(open);
-    if (!open) {
-      setIsCopied(false);
+      toast.success("URL copied!");
+    } catch {
+      toast.error("Failed to copy URL");
     }
   }
 
   async function handleDelete() {
-    setIsDeleting(true);
-    setShowDeleteDialog(false);
     try {
       await deleteBookmark(bookmark.id);
       toast.success("Bookmark deleted!");
-    } catch (error) {
-      console.error("Failed to delete bookmark:", error);
-      toast.error("Failed to delete bookmark. Please try again.");
-      setIsDeleting(false);
+    } catch {
+      toast.error("Failed to delete bookmark");
     }
   }
 
@@ -91,9 +74,8 @@ export default function BookmarkCard({ bookmark }: { bookmark: Bookmark }) {
       await updateBookmark(bookmark.id, formData);
       setIsEditDialogOpen(false);
       toast.success("Bookmark updated!");
-    } catch (error) {
-      console.error("Failed to update bookmark:", error);
-      toast.error("Failed to update bookmark. Please try again.");
+    } catch {
+      toast.error("Failed to update bookmark");
     }
   }
 
@@ -110,15 +92,13 @@ export default function BookmarkCard({ bookmark }: { bookmark: Bookmark }) {
           </a>
         </CardDescription>
         <CardAction>
-          <Tooltip
-            open={showCopyTooltip}
-            onOpenChange={handleTooltipOpenChange}>
+          <Tooltip>
             <TooltipTrigger asChild>
               <Button variant="ghost" size="icon" onClick={handleCopyUrl}>
                 <Copy />
               </Button>
             </TooltipTrigger>
-            <TooltipContent>{isCopied ? "Copied!" : "Copy"}</TooltipContent>
+            <TooltipContent>Copy</TooltipContent>
           </Tooltip>
           <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
             <Tooltip>
@@ -173,13 +153,11 @@ export default function BookmarkCard({ bookmark }: { bookmark: Bookmark }) {
               </form>
             </DialogContent>
           </Dialog>
-          <AlertDialog
-            open={showDeleteDialog}
-            onOpenChange={setShowDeleteDialog}>
+          <AlertDialog>
             <Tooltip>
               <TooltipTrigger asChild>
                 <AlertDialogTrigger asChild>
-                  <Button variant="ghost" size="icon" disabled={isDeleting}>
+                  <Button variant="ghost" size="icon">
                     <Trash2 />
                   </Button>
                 </AlertDialogTrigger>
