@@ -1,7 +1,7 @@
 "use client";
 
 import { Copy, Edit2, Trash2 } from "lucide-react";
-import { useState } from "react";
+import { useActionState, useState } from "react";
 import { toast } from "sonner";
 
 import {
@@ -50,6 +50,22 @@ type Bookmark = {
 
 export default function BookmarkCard({ bookmark }: { bookmark: Bookmark }) {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  const [, updateAction, isUpdating] = useActionState(
+    async (_: unknown, formData: FormData) => {
+      try {
+        await updateBookmark(bookmark.id, formData);
+        setIsEditDialogOpen(false);
+        toast.success("Bookmark updated!");
+        return { success: true };
+      } catch {
+        toast.error("Failed to update bookmark");
+        return { success: false };
+      }
+    },
+    null,
+  );
 
   async function handleCopyUrl() {
     try {
@@ -61,21 +77,14 @@ export default function BookmarkCard({ bookmark }: { bookmark: Bookmark }) {
   }
 
   async function handleDelete() {
+    setIsDeleting(true);
     try {
       await deleteBookmark(bookmark.id);
       toast.success("Bookmark deleted!");
     } catch {
       toast.error("Failed to delete bookmark");
-    }
-  }
-
-  async function handleUpdate(formData: FormData) {
-    try {
-      await updateBookmark(bookmark.id, formData);
-      setIsEditDialogOpen(false);
-      toast.success("Bookmark updated!");
-    } catch {
-      toast.error("Failed to update bookmark");
+    } finally {
+      setIsDeleting(false);
     }
   }
 
@@ -118,7 +127,7 @@ export default function BookmarkCard({ bookmark }: { bookmark: Bookmark }) {
                   Update the details of your bookmark below.
                 </DialogDescription>
               </DialogHeader>
-              <form action={handleUpdate} className="space-y-4">
+              <form action={updateAction} className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="name">Name</Label>
                   <Input
@@ -128,6 +137,7 @@ export default function BookmarkCard({ bookmark }: { bookmark: Bookmark }) {
                     placeholder="Example"
                     defaultValue={bookmark.name}
                     required
+                    disabled={isUpdating}
                   />
                 </div>
                 <div className="space-y-2">
@@ -139,16 +149,20 @@ export default function BookmarkCard({ bookmark }: { bookmark: Bookmark }) {
                     placeholder="https://example.com"
                     defaultValue={bookmark.url}
                     required
+                    disabled={isUpdating}
                   />
                 </div>
                 <DialogFooter>
                   <Button
                     type="button"
                     variant="outline"
-                    onClick={() => setIsEditDialogOpen(false)}>
+                    onClick={() => setIsEditDialogOpen(false)}
+                    disabled={isUpdating}>
                     Cancel
                   </Button>
-                  <Button type="submit">Save</Button>
+                  <Button type="submit" disabled={isUpdating}>
+                    {isUpdating ? "Saving..." : "Save"}
+                  </Button>
                 </DialogFooter>
               </form>
             </DialogContent>
@@ -173,9 +187,11 @@ export default function BookmarkCard({ bookmark }: { bookmark: Bookmark }) {
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction onClick={handleDelete}>
-                  Delete
+                <AlertDialogCancel disabled={isDeleting}>
+                  Cancel
+                </AlertDialogCancel>
+                <AlertDialogAction onClick={handleDelete} disabled={isDeleting}>
+                  {isDeleting ? "Deleting..." : "Delete"}
                 </AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>
