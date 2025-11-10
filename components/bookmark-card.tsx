@@ -40,13 +40,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { deleteBookmark, updateBookmark } from "@/db/actions";
-
-type Bookmark = {
-  id: string;
-  url: string;
-  name: string;
-  createdAt: Date;
-};
+import type { Bookmark } from "@/types";
 
 export default function BookmarkCard({ bookmark }: { bookmark: Bookmark }) {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
