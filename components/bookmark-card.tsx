@@ -1,6 +1,6 @@
 "use client";
 
-import { Copy, Edit2, Trash2 } from "lucide-react";
+import { Copy, Edit, Trash } from "lucide-react";
 import { useActionState, useState } from "react";
 import { toast } from "sonner";
 
@@ -114,7 +114,7 @@ export default function BookmarkCard({ bookmark }: { bookmark: Bookmark }) {
               <TooltipTrigger asChild>
                 <DialogTrigger asChild>
                   <Button variant="ghost" size="icon">
-                    <Edit2 />
+                    <Edit />
                   </Button>
                 </DialogTrigger>
               </TooltipTrigger>
@@ -172,7 +172,7 @@ export default function BookmarkCard({ bookmark }: { bookmark: Bookmark }) {
               <TooltipTrigger asChild>
                 <AlertDialogTrigger asChild>
                   <Button variant="ghost" size="icon">
-                    <Trash2 />
+                    <Trash />
                   </Button>
                 </AlertDialogTrigger>
               </TooltipTrigger>
