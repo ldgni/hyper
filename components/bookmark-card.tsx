@@ -129,9 +129,9 @@ export default function BookmarkCard({ bookmark }: { bookmark: Bookmark }) {
               </DialogHeader>
               <form action={updateAction} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="name">Name</Label>
+                  <Label htmlFor="name2">Name</Label>
                   <Input
-                    id="name"
+                    id="name2"
                     type="text"
                     name="name"
                     placeholder="Example"
@@ -141,9 +141,9 @@ export default function BookmarkCard({ bookmark }: { bookmark: Bookmark }) {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="url">URL</Label>
+                  <Label htmlFor="url2">URL</Label>
                   <Input
-                    id="url"
+                    id="url2"
                     type="url"
                     name="url"
                     placeholder="https://example.com"
