@@ -19,4 +19,8 @@ export const auth = betterAuth({
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
     },
   },
+  session: {
+    expiresIn: 60 * 60 * 4,
+    updateAge: 60 * 60,
+  },
 });
