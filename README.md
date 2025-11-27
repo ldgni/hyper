@@ -31,7 +31,7 @@ cp .env.example .env.local
 4.  Start the development server
 
 ```sh
-pnpm run dev
+pnpm dev
 ```
 
 ## Contributing
