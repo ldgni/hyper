@@ -18,7 +18,8 @@ export default function LogoutButton() {
 
   return (
     <Button onClick={signOut} variant="ghost">
-      <LogOut /> Logout
+      <LogOut />
+      <span className="sr-only sm:not-sr-only">Logout</span>
     </Button>
   );
 }
