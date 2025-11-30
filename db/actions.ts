@@ -1,6 +1,6 @@
 "use server";
 
-import { desc, eq } from "drizzle-orm";
+import { and, desc, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
 
@@ -69,18 +69,15 @@ export async function updateBookmark(id: string, formData: FormData) {
     throw new Error("URL and name are required");
   }
 
-  // Verify the bookmark belongs to the user
-  const existingBookmark = await db
-    .select()
-    .from(bookmark)
-    .where(eq(bookmark.id, id))
-    .limit(1);
+  const [updated] = await db
+    .update(bookmark)
+    .set({ url, name })
+    .where(and(eq(bookmark.id, id), eq(bookmark.userId, user.id)))
+    .returning();
 
-  if (!existingBookmark.length || existingBookmark[0].userId !== user.id) {
+  if (!updated) {
     throw new Error("Bookmark not found or unauthorized");
   }
-
-  await db.update(bookmark).set({ url, name }).where(eq(bookmark.id, id));
 
   revalidatePath("/");
   return { success: true };
@@ -90,18 +87,14 @@ export async function updateBookmark(id: string, formData: FormData) {
 export async function deleteBookmark(id: string) {
   const user = await getCurrentUser();
 
-  // Verify the bookmark belongs to the user
-  const existingBookmark = await db
-    .select()
-    .from(bookmark)
-    .where(eq(bookmark.id, id))
-    .limit(1);
+  const [deleted] = await db
+    .delete(bookmark)
+    .where(and(eq(bookmark.id, id), eq(bookmark.userId, user.id)))
+    .returning();
 
-  if (!existingBookmark.length || existingBookmark[0].userId !== user.id) {
+  if (!deleted) {
     throw new Error("Bookmark not found or unauthorized");
   }
-
-  await db.delete(bookmark).where(eq(bookmark.id, id));
 
   revalidatePath("/");
   return { success: true };
