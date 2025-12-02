@@ -5,26 +5,28 @@ import { FaGithub, FaGoogle } from "react-icons/fa";
 import { Button } from "@/components/ui/button";
 import { authClient } from "@/lib/auth-client";
 
-export default function LoginButton() {
-  const signInWithGithub = async () =>
+export default function SignInButtons() {
+  const handleGitHubLogin = async () => {
     await authClient.signIn.social({
       provider: "github",
     });
+  };
 
-  const signInWithGoogle = async () =>
+  const handleGoogleLogin = async () => {
     await authClient.signIn.social({
       provider: "google",
     });
+  };
 
   return (
-    <div className="flex flex-col items-center justify-center gap-2 sm:flex-row">
-      <Button onClick={signInWithGithub}>
+    <div className="flex flex-col gap-2 sm:flex-row">
+      <Button onClick={handleGitHubLogin} variant="outline">
         <FaGithub />
-        Login with GitHub
+        Sign in with GitHub
       </Button>
-      <Button onClick={signInWithGoogle}>
+      <Button onClick={handleGoogleLogin} variant="outline">
         <FaGoogle />
-        Login with Google
+        Sign in with Google
       </Button>
     </div>
   );

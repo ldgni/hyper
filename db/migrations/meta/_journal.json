@@ -1,26 +1,26 @@
 {
   "version": "7",
-  "dialect": "postgresql",
+  "dialect": "sqlite",
   "entries": [
     {
       "idx": 0,
-      "version": "7",
-      "when": 1762356746181,
-      "tag": "0000_omniscient_doctor_faustus",
+      "version": "6",
+      "when": 1764674323965,
+      "tag": "0000_sad_rogue",
       "breakpoints": true
     },
     {
       "idx": 1,
-      "version": "7",
-      "when": 1762443007689,
-      "tag": "0001_vengeful_cable",
+      "version": "6",
+      "when": 1764684995523,
+      "tag": "0001_moaning_karen_page",
       "breakpoints": true
     },
     {
       "idx": 2,
-      "version": "7",
-      "when": 1762605545854,
-      "tag": "0002_material_scarecrow",
+      "version": "6",
+      "when": 1764685487252,
+      "tag": "0002_icy_oracle",
       "breakpoints": true
     }
   ]

@@ -6,20 +6,23 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { authClient } from "@/lib/auth-client";
 
-export default function LogoutButton() {
+export default function SignOutButton() {
   const router = useRouter();
 
-  const signOut = async () =>
+  const handleSignOut = async () => {
     await authClient.signOut({
       fetchOptions: {
-        onSuccess: () => router.refresh(),
+        onSuccess: () => {
+          router.refresh();
+        },
       },
     });
+  };
 
   return (
-    <Button onClick={signOut} variant="ghost">
+    <Button onClick={handleSignOut} variant="ghost">
       <LogOut />
-      <span className="sr-only sm:not-sr-only">Logout</span>
+      <span className="sr-only sm:not-sr-only">Sign out</span>
     </Button>
   );
 }

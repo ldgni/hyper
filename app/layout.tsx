@@ -21,8 +21,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={notoSans.className} suppressHydrationWarning>
-      <body className="overflow-y-scroll antialiased">
+    <html lang="en" suppressHydrationWarning>
+      <body className={`${notoSans.className} overflow-y-scroll antialiased`}>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
