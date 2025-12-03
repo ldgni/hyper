@@ -1,7 +1,7 @@
 "use client";
 
-import { Pencil } from "lucide-react";
-import { useState } from "react";
+import { Edit } from "lucide-react";
+import { useState, useTransition } from "react";
 import { toast } from "sonner";
 
 import { updateBookmarkAction } from "@/app/actions";
@@ -21,50 +21,53 @@ import { Label } from "@/components/ui/label";
 interface EditBookmarkDialogProps {
   bookmark: {
     id: string;
-    title: string;
+    name: string;
     url: string;
   };
 }
 
-export function EditBookmarkDialog({ bookmark }: EditBookmarkDialogProps) {
+export default function EditBookmarkDialog({
+  bookmark,
+}: EditBookmarkDialogProps) {
   const [open, setOpen] = useState(false);
-  const [isPending, setIsPending] = useState(false);
+  const [isPending, startTransition] = useTransition();
 
   async function handleSubmit(formData: FormData) {
-    setIsPending(true);
-    const result = await updateBookmarkAction(formData);
-    setIsPending(false);
+    startTransition(async () => {
+      const result = await updateBookmarkAction(formData);
 
-    if (result.error) {
-      toast.error(result.error);
-      return;
-    }
+      if (result.error) {
+        toast.error(result.error);
+        return;
+      }
 
-    toast.success("Bookmark updated");
-    setOpen(false);
+      toast.success("Bookmark updated");
+      setOpen(false);
+    });
   }
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="ghost" size="icon">
-          <Pencil className="size-4" />
+          <Edit />
           <span className="sr-only">Edit</span>
         </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Edit Bookmark</DialogTitle>
+          <DialogTitle>Edit bookmark</DialogTitle>
           <DialogDescription>Make changes to your bookmark.</DialogDescription>
         </DialogHeader>
         <form action={handleSubmit} className="space-y-4">
           <input type="hidden" name="id" value={bookmark.id} />
           <div className="space-y-2">
-            <Label htmlFor="title">Title</Label>
+            <Label htmlFor="name">Name</Label>
             <Input
-              id="title"
-              name="title"
-              defaultValue={bookmark.title}
+              id="name"
+              name="name"
+              type="text"
+              defaultValue={bookmark.name}
               required
             />
           </div>
@@ -80,7 +83,7 @@ export function EditBookmarkDialog({ bookmark }: EditBookmarkDialogProps) {
           </div>
           <DialogFooter>
             <Button type="submit" disabled={isPending}>
-              {isPending ? "Saving..." : "Save Changes"}
+              {isPending ? "Saving..." : "Save changes"}
             </Button>
           </DialogFooter>
         </form>

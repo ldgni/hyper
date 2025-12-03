@@ -111,7 +111,7 @@ export const bookmark = sqliteTable(
   "bookmark",
   {
     id: text("id").primaryKey(),
-    title: text("title").notNull(),
+    name: text("name").notNull(),
     url: text("url").notNull(),
     userId: text("user_id")
       .notNull()

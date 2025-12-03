@@ -1,6 +1,6 @@
 import { headers } from "next/headers";
 
-import { BookmarkList } from "@/components/bookmark-list";
+import BookmarkList from "@/components/bookmark-list";
 import SignInButtons from "@/components/sign-in-buttons";
 import { getBookmarksByUserId } from "@/db/queries/select";
 import { auth } from "@/lib/auth";

@@ -1,0 +1,1 @@
+ALTER TABLE `bookmark` RENAME COLUMN "title" TO "name";

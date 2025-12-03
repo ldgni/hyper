@@ -1,7 +1,7 @@
 "use client";
 
 import { Plus } from "lucide-react";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { toast } from "sonner";
 
 import { createBookmarkAction } from "@/app/actions";
@@ -18,22 +18,22 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-export function AddBookmarkDialog() {
+export default function AddBookmarkDialog() {
   const [open, setOpen] = useState(false);
-  const [isPending, setIsPending] = useState(false);
+  const [isPending, startTransition] = useTransition();
 
   async function handleSubmit(formData: FormData) {
-    setIsPending(true);
-    const result = await createBookmarkAction(formData);
-    setIsPending(false);
+    startTransition(async () => {
+      const result = await createBookmarkAction(formData);
 
-    if (result.error) {
-      toast.error(result.error);
-      return;
-    }
+      if (result.error) {
+        toast.error(result.error);
+        return;
+      }
 
-    toast.success("Bookmark added");
-    setOpen(false);
+      toast.success("Bookmark added");
+      setOpen(false);
+    });
   }
 
   return (
@@ -41,20 +41,26 @@ export function AddBookmarkDialog() {
       <DialogTrigger asChild>
         <Button>
           <Plus />
-          Add Bookmark
+          <span className="sr-only sm:not-sr-only">Add bookmark</span>
         </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Add Bookmark</DialogTitle>
+          <DialogTitle>Add bookmark</DialogTitle>
           <DialogDescription>
             Add a new bookmark to your collection.
           </DialogDescription>
         </DialogHeader>
         <form action={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="title">Title</Label>
-            <Input id="title" name="title" placeholder="My Bookmark" required />
+            <Label htmlFor="name">Name</Label>
+            <Input
+              id="name"
+              name="name"
+              type="text"
+              placeholder="Example"
+              required
+            />
           </div>
           <div className="space-y-2">
             <Label htmlFor="url">URL</Label>
@@ -68,7 +74,7 @@ export function AddBookmarkDialog() {
           </div>
           <DialogFooter>
             <Button type="submit" disabled={isPending}>
-              {isPending ? "Adding..." : "Add Bookmark"}
+              {isPending ? "Adding..." : "Add bookmark"}
             </Button>
           </DialogFooter>
         </form>

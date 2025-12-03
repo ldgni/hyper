@@ -18,17 +18,17 @@ export async function createBookmarkAction(formData: FormData) {
     return { error: "Unauthorized" };
   }
 
-  const title = formData.get("title") as string;
+  const name = formData.get("name") as string;
   const url = formData.get("url") as string;
 
-  if (!title || !url) {
-    return { error: "Title and URL are required" };
+  if (!name || !url) {
+    return { error: "Name and URL are required" };
   }
 
   try {
     await insertBookmark({
       id: crypto.randomUUID(),
-      title,
+      name,
       url,
       userId: session.user.id,
     });
@@ -50,11 +50,11 @@ export async function updateBookmarkAction(formData: FormData) {
   }
 
   const id = formData.get("id") as string;
-  const title = formData.get("title") as string;
+  const name = formData.get("name") as string;
   const url = formData.get("url") as string;
 
-  if (!id || !title || !url) {
-    return { error: "ID, Title, and URL are required" };
+  if (!id || !name || !url) {
+    return { error: "ID, Name, and URL are required" };
   }
 
   // Check if the user owns this bookmark
@@ -65,7 +65,7 @@ export async function updateBookmarkAction(formData: FormData) {
 
   try {
     await updateBookmark(id, {
-      title,
+      name,
       url,
     });
 
