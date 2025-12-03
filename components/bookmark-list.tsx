@@ -1,4 +1,5 @@
 import AddBookmarkDialog from "@/components/add-bookmark-dialog";
+import CopyBookmarkButton from "@/components/copy-bookmark-button";
 import DeleteBookmarkDialog from "@/components/delete-bookmark-dialog";
 import EditBookmarkDialog from "@/components/edit-bookmark-dialog";
 import {
@@ -50,6 +51,7 @@ export default function BookmarkList({ bookmarks }: BookmarkListProps) {
                   </a>
                 </CardDescription>
                 <CardAction>
+                  <CopyBookmarkButton url={bookmark.url} />
                   <EditBookmarkDialog bookmark={bookmark} />
                   <DeleteBookmarkDialog
                     bookmarkId={bookmark.id}
