@@ -25,7 +25,7 @@ interface BookmarkListProps {
 
 export default function BookmarkList({ bookmarks }: BookmarkListProps) {
   return (
-    <>
+    <div className="px-3">
       <div className="mb-8 flex items-center justify-between">
         <h1 className="text-2xl font-bold">Bookmarks</h1>
         <AddBookmarkDialog />
@@ -63,6 +63,6 @@ export default function BookmarkList({ bookmarks }: BookmarkListProps) {
           ))}
         </div>
       )}
-    </>
+    </div>
   );
 }
