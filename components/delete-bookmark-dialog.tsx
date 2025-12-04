@@ -57,7 +57,7 @@ export default function DeleteBookmarkDialog({
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Delete Bookmark</AlertDialogTitle>
+          <AlertDialogTitle>Delete bookmark</AlertDialogTitle>
           <AlertDialogDescription>
             Are you sure you want to delete &quot;{bookmarkName}&quot;? This
             action cannot be undone.
