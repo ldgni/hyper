@@ -1,28 +1,42 @@
-import { Archive, Github } from "lucide-react";
-import { headers } from "next/headers";
+"use client";
+
+import { Github, Home } from "lucide-react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 import ModeToggle from "@/components/mode-toggle";
-import SignOutButton from "@/components/sign-out-button";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { auth } from "@/lib/auth";
 
-export default async function Header() {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+const navLinks = [
+  {
+    href: "/",
+    label: "Home",
+    icon: Home,
+  },
+];
+
+export default function Header() {
+  const pathname = usePathname();
 
   return (
     <header className="mb-8 flex items-center justify-between">
-      <nav className="flex gap-2 sm:gap-4">
-        <Button variant="ghost" asChild>
-          <Link href="/">
-            <Archive />
-            <span className="sr-only sm:not-sr-only">Stash</span>
-          </Link>
-        </Button>
-        {session && <SignOutButton />}
+      <nav>
+        <ul className="flex gap-2">
+          {navLinks.map((link) => (
+            <li key={link.href}>
+              <Button
+                variant="ghost"
+                asChild
+                className={pathname === link.href ? "bg-accent" : ""}>
+                <Link href={link.href}>
+                  <link.icon />
+                  {link.label}
+                </Link>
+              </Button>
+            </li>
+          ))}
+        </ul>
       </nav>
       <div className="flex h-4 items-center gap-2">
         <Button variant="ghost" size="icon" asChild>

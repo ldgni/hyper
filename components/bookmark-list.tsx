@@ -2,6 +2,7 @@ import AddBookmarkDialog from "@/components/add-bookmark-dialog";
 import CopyBookmarkButton from "@/components/copy-bookmark-button";
 import DeleteBookmarkDialog from "@/components/delete-bookmark-dialog";
 import EditBookmarkDialog from "@/components/edit-bookmark-dialog";
+import SignOutButton from "@/components/sign-out-button";
 import {
   Card,
   CardAction,
@@ -28,7 +29,10 @@ export default function BookmarkList({ bookmarks }: BookmarkListProps) {
     <>
       <div className="mb-8 flex items-center justify-between">
         <h1 className="text-2xl font-bold">Bookmarks</h1>
-        <AddBookmarkDialog />
+        <div className="flex gap-2">
+          <AddBookmarkDialog />
+          <SignOutButton />
+        </div>
       </div>
 
       {bookmarks.length === 0 ? (

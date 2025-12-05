@@ -20,7 +20,7 @@ export default function SignOutButton() {
   };
 
   return (
-    <Button onClick={handleSignOut} variant="ghost">
+    <Button onClick={handleSignOut} variant="outline">
       <LogOut />
       <span className="sr-only sm:not-sr-only">Sign out</span>
     </Button>
