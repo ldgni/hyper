@@ -1,7 +1,9 @@
 import { headers } from "next/headers";
 
+import AddBookmarkDialog from "@/components/add-bookmark-dialog";
 import BookmarkList from "@/components/bookmark-list";
 import SignInButtons from "@/components/sign-in-buttons";
+import SignOutButton from "@/components/sign-out-button";
 import { getBookmarksByUserId } from "@/db/queries/select";
 import { auth } from "@/lib/auth";
 
@@ -13,7 +15,18 @@ export default async function HomePage() {
   if (session) {
     const bookmarks = await getBookmarksByUserId(session.user.id);
 
-    return <BookmarkList bookmarks={bookmarks} />;
+    return (
+      <>
+        <div className="mb-8 flex items-center justify-between">
+          <h1 className="text-2xl font-bold">Bookmarks</h1>
+          <div className="flex gap-2">
+            <AddBookmarkDialog />
+            <SignOutButton />
+          </div>
+        </div>
+        <BookmarkList bookmarks={bookmarks} />
+      </>
+    );
   }
 
   return (
