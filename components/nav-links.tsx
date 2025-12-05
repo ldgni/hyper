@@ -16,6 +16,7 @@ const navItems = [
 
 export default function NavLinks() {
   const pathname = usePathname();
+
   return (
     <nav>
       <ul className="flex gap-2">
