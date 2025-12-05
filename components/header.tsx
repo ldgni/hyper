@@ -1,43 +1,14 @@
-"use client";
-
-import { Github, Home } from "lucide-react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { Github } from "lucide-react";
 
 import ModeToggle from "@/components/mode-toggle";
+import NavLinks from "@/components/nav-links";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 
-const navLinks = [
-  {
-    href: "/",
-    label: "Home",
-    icon: Home,
-  },
-];
-
 export default function Header() {
-  const pathname = usePathname();
-
   return (
     <header className="mb-8 flex items-center justify-between">
-      <nav>
-        <ul className="flex gap-2">
-          {navLinks.map((link) => (
-            <li key={link.href}>
-              <Button
-                variant="ghost"
-                asChild
-                className={pathname === link.href ? "bg-accent" : ""}>
-                <Link href={link.href}>
-                  <link.icon />
-                  {link.label}
-                </Link>
-              </Button>
-            </li>
-          ))}
-        </ul>
-      </nav>
+      <NavLinks />
       <div className="flex h-4 items-center gap-2">
         <Button variant="ghost" size="icon" asChild>
           <a
