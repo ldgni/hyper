@@ -37,7 +37,7 @@ export default function BookmarkList({ bookmarks }: BookmarkListProps) {
           <p>Add your first bookmark to get started!</p>
         </div>
       ) : (
-        <div className="grid gap-4 sm:grid-cols-2">
+        <div className="flex flex-col gap-4">
           {bookmarks.map((bookmark) => (
             <Card key={bookmark.id}>
               <CardHeader>
