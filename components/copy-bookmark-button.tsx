@@ -25,7 +25,7 @@ export default function CopyBookmarkButton({ url }: CopyBookmarkButtonProps) {
   }
 
   return (
-    <Button variant="ghost" size="icon" onClick={handleCopy}>
+    <Button variant="ghost" size="icon-sm" onClick={handleCopy}>
       {copied ? <Check /> : <Copy />}
       <span className="sr-only">Copy URL</span>
     </Button>

@@ -50,7 +50,7 @@ export default function DeleteBookmarkDialog({
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
       <AlertDialogTrigger asChild>
-        <Button variant="ghost" size="icon">
+        <Button variant="ghost" size="icon-sm">
           <Trash2 />
           <span className="sr-only">Delete</span>
         </Button>

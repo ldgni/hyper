@@ -49,7 +49,7 @@ export default function EditBookmarkDialog({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="ghost" size="icon">
+        <Button variant="ghost" size="icon-sm">
           <Edit />
           <span className="sr-only">Edit</span>
         </Button>
