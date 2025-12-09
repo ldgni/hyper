@@ -1,14 +1,14 @@
 import "./globals.css";
 
 import type { Metadata } from "next";
-import { Noto_Sans } from "next/font/google";
+import { Inter } from "next/font/google";
 
 import Footer from "@/components/footer";
 import Header from "@/components/header";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 
-const notoSans = Noto_Sans({ subsets: ["latin"] });
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Stash - Save your bookmarks",
@@ -22,7 +22,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${notoSans.className} overflow-y-scroll antialiased`}>
+      <body className={`${inter.className} overflow-y-scroll antialiased`}>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
