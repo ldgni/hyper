@@ -11,7 +11,7 @@ import { Toaster } from "@/components/ui/sonner";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Stash - Save your bookmarks",
+  title: "Hyper - Save your bookmarks",
   description: "Save your favorite links",
 };
 

@@ -12,7 +12,7 @@ export default function Header() {
       <div className="flex h-4 items-center gap-2">
         <Button variant="ghost" size="icon" asChild>
           <a
-            href="https://github.com/ldgni/stash"
+            href="https://github.com/ldgni/hyper"
             target="_blank"
             aria-label="View source on GitHub">
             <Github />
