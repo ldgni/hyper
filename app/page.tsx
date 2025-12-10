@@ -32,7 +32,9 @@ export default async function HomePage() {
   return (
     <div className="grid place-items-center gap-2">
       <h1 className="text-4xl font-bold sm:text-6xl">Hyper</h1>
-      <p className="text-muted-foreground mb-2">Never lose your bookmarks</p>
+      <p className="text-muted-foreground mb-2 italic">
+        Never lose your bookmarks
+      </p>
       <SignInButtons />
     </div>
   );
