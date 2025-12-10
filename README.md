@@ -1,4 +1,4 @@
-# Stash
+# Hyper
 
 > Bookmark management app
 
@@ -7,13 +7,13 @@
 1. Clone the repository
 
 ```sh
-git clone https://github.com/ldgni/stash.git
+git clone https://github.com/ldgni/hyper.git
 ```
 
 2. Navigate inside the repository
 
 ```sh
-cd stash
+cd hyper
 ```
 
 3. Install dependencies
