@@ -1,6 +1,6 @@
 # Hyper
 
-> Bookmark management app
+> Bookmark manager
 
 ## Running Locally
 
