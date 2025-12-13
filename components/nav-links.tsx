@@ -27,8 +27,10 @@ export default function NavLinks() {
               asChild
               className={pathname === item.href ? "bg-accent" : ""}>
               <Link href={item.href}>
-                <item.icon />
-                {item.label}
+                <span className="sm:hidden">
+                  <item.icon />
+                </span>
+                <span className="hidden sm:inline">{item.label}</span>
               </Link>
             </Button>
           </li>
