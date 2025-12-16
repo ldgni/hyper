@@ -1,6 +1,6 @@
 # Hyper
 
-> Bookmark manager
+> Bookmark manager to store web links
 
 ## Running Locally
 
