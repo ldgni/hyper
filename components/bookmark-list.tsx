@@ -8,15 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-
-interface Bookmark {
-  id: string;
-  name: string;
-  url: string;
-  userId: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
+import { Bookmark } from "@/types";
 
 interface BookmarkListProps {
   bookmarks: Bookmark[];
