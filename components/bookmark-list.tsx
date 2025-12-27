@@ -2,12 +2,12 @@ import CopyBookmarkButton from "@/components/copy-bookmark-button";
 import DeleteBookmarkDialog from "@/components/delete-bookmark-dialog";
 import EditBookmarkDialog from "@/components/edit-bookmark-dialog";
 import {
-  Card,
-  CardAction,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+  Item,
+  ItemActions,
+  ItemContent,
+  ItemDescription,
+  ItemTitle,
+} from "@/components/ui/item";
 import { Bookmark } from "@/types";
 
 interface BookmarkListProps {
@@ -23,30 +23,25 @@ export default function BookmarkList({ bookmarks }: BookmarkListProps) {
           <p>Add your first bookmark to get started!</p>
         </div>
       ) : (
-        <ul className="grid gap-4 sm:grid-cols-2">
+        <ul className="space-y-4">
           {bookmarks.map((bookmark) => (
             <li key={bookmark.id}>
-              <Card>
-                <CardHeader>
-                  <CardTitle>{bookmark.name}</CardTitle>
-                  <CardDescription className="truncate">
-                    <a
-                      href={bookmark.url}
-                      target="_blank"
-                      className="hover:text-foreground transition-colors">
-                      {bookmark.url}
-                    </a>
-                  </CardDescription>
-                  <CardAction>
-                    <CopyBookmarkButton url={bookmark.url} />
-                    <EditBookmarkDialog bookmark={bookmark} />
-                    <DeleteBookmarkDialog
-                      bookmarkId={bookmark.id}
-                      bookmarkName={bookmark.name}
-                    />
-                  </CardAction>
-                </CardHeader>
-              </Card>
+              <Item variant="outline">
+                <ItemContent className="min-w-0">
+                  <ItemTitle>{bookmark.name}</ItemTitle>
+                  <ItemDescription className="truncate">
+                    {bookmark.url}
+                  </ItemDescription>
+                </ItemContent>
+                <ItemActions>
+                  <CopyBookmarkButton url={bookmark.url} />
+                  <EditBookmarkDialog bookmark={bookmark} />
+                  <DeleteBookmarkDialog
+                    bookmarkId={bookmark.id}
+                    bookmarkName={bookmark.name}
+                  />
+                </ItemActions>
+              </Item>
             </li>
           ))}
         </ul>
