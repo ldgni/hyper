@@ -8,7 +8,9 @@ import {
   ItemDescription,
   ItemTitle,
 } from "@/components/ui/item";
-import { Bookmark } from "@/types";
+import { bookmark } from "@/db/schema";
+
+type Bookmark = typeof bookmark.$inferSelect;
 
 interface BookmarkListProps {
   bookmarks: Bookmark[];
@@ -30,7 +32,12 @@ export default function BookmarkList({ bookmarks }: BookmarkListProps) {
                 <ItemContent className="min-w-0">
                   <ItemTitle>{bookmark.name}</ItemTitle>
                   <ItemDescription className="truncate">
-                    {bookmark.url}
+                    <a
+                      href={bookmark.url}
+                      target="_blank"
+                      className="hover:underline">
+                      {bookmark.url}
+                    </a>
                   </ItemDescription>
                 </ItemContent>
                 <ItemActions>

@@ -2,12 +2,28 @@
 
 import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
+import { z } from "zod";
 
 import { deleteBookmark } from "@/db/queries/delete";
 import { insertBookmark } from "@/db/queries/insert";
 import { getBookmarkById } from "@/db/queries/select";
 import { updateBookmark } from "@/db/queries/update";
 import { auth } from "@/lib/auth";
+
+const createBookmarkSchema = z.object({
+  name: z.string().min(1, "Name is required").max(255, "Name is too long"),
+  url: z.string().url("Invalid URL format"),
+});
+
+const updateBookmarkSchema = z.object({
+  id: z.string().min(1, "ID is required"),
+  name: z.string().min(1, "Name is required").max(255, "Name is too long"),
+  url: z.string().url("Invalid URL format"),
+});
+
+const deleteBookmarkSchema = z.object({
+  id: z.string().min(1, "ID is required"),
+});
 
 export async function createBookmarkAction(formData: FormData) {
   const session = await auth.api.getSession({
@@ -18,12 +34,16 @@ export async function createBookmarkAction(formData: FormData) {
     return { error: "Unauthorized" };
   }
 
-  const name = formData.get("name") as string;
-  const url = formData.get("url") as string;
+  const parsed = createBookmarkSchema.safeParse({
+    name: formData.get("name"),
+    url: formData.get("url"),
+  });
 
-  if (!name || !url) {
-    return { error: "Name and URL are required" };
+  if (!parsed.success) {
+    return { error: parsed.error.issues[0].message };
   }
+
+  const { name, url } = parsed.data;
 
   try {
     await insertBookmark({
@@ -49,13 +69,17 @@ export async function updateBookmarkAction(formData: FormData) {
     return { error: "Unauthorized" };
   }
 
-  const id = formData.get("id") as string;
-  const name = formData.get("name") as string;
-  const url = formData.get("url") as string;
+  const parsed = updateBookmarkSchema.safeParse({
+    id: formData.get("id"),
+    name: formData.get("name"),
+    url: formData.get("url"),
+  });
 
-  if (!id || !name || !url) {
-    return { error: "ID, Name, and URL are required" };
+  if (!parsed.success) {
+    return { error: parsed.error.issues[0].message };
   }
+
+  const { id, name, url } = parsed.data;
 
   // Check if the user owns this bookmark
   const bookmark = await getBookmarkById(id);
@@ -85,11 +109,15 @@ export async function deleteBookmarkAction(formData: FormData) {
     return { error: "Unauthorized" };
   }
 
-  const id = formData.get("id") as string;
+  const parsed = deleteBookmarkSchema.safeParse({
+    id: formData.get("id"),
+  });
 
-  if (!id) {
-    return { error: "ID is required" };
+  if (!parsed.success) {
+    return { error: parsed.error.issues[0].message };
   }
+
+  const { id } = parsed.data;
 
   // Check if the user owns this bookmark
   const bookmark = await getBookmarkById(id);
